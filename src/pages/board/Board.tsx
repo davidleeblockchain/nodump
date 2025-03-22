@@ -9,7 +9,7 @@ export const Board = (): JSX.Element => {
   // Data for coin cards to enable mapping
   const coinCards = Array(12).fill({
     name: "Coin Name",
-    image: "public/images-12.png",
+    image: "/images-12.png",
   });
 
   return (
@@ -19,7 +19,7 @@ export const Board = (): JSX.Element => {
         <img
           className="w-full h-full absolute top-0 left-0"
           alt="Background"
-          src="public/rectangle-1.svg"
+          src="/rectangle-1.svg"
         />
 
         <div className="absolute w-full md:w-[650px] h-[650px] top-[346px] left-0 md:left-[-54px] rounded-[324.87px] rotate-[-6.23deg] blur-[350px] [background:linear-gradient(180deg,rgb(220,0,211)_54.43%,rgb(12,250,245)_100%)]" />
@@ -29,7 +29,7 @@ export const Board = (): JSX.Element => {
           <img
             className="h-auto md:h-[114px] w-[200px] md:w-[273px] object-contain"
             alt="Logo"
-            src="public/group-10-1.png"
+            src="/group-10-1.png"
           />
           <Button
             variant="ghost"
