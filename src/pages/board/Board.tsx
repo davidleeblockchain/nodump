@@ -126,7 +126,7 @@ export const Board = (): JSX.Element => {
                         </div>
                       )}
                       <img
-                        className="absolute w-[80px] sm:w-[104px] h-[80px] sm:h-[104px] -top-6 sm:-top-6 -right-4 sm:-right-6"
+                        className="absolute w-[80px] sm:w-[104px] h-[80px] sm:h-[104px] -top-4 sm:-top-10 -right-4 sm:-right-6"
                         alt="Astronaut"
                         src="/moonruler.png"
                       />
