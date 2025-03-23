@@ -6,10 +6,35 @@ import { Input } from "../../components/ui/input";
 import { ScrollArea } from "../../components/ui/scroll-area";
 
 export const Board = (): JSX.Element => {
+  // Data for coin cards
+  const topCoins = [
+    {
+      id: 1,
+      name: "MOON RULER",
+      ticker: "Token Name (TICKER)",
+      description: "Short Description Short Description Short Description",
+      creator: "83r38r",
+      marketCap: "100M",
+      isTopRuler: true,
+      hasDetails: true,
+    },
+    {
+      id: 2,
+      name: "MOON RULER",
+      isTopRuler: true,
+      hasDetails: false,
+    },
+    {
+      id: 3,
+      name: "MOON RULER",
+      isTopRuler: true,
+      hasDetails: false,
+    },
+  ];
   // Data for coin cards to enable mapping
   const coinCards = Array(12).fill({
     name: "Coin Name",
-    image: "/images-12.png",
+    image: "/coin.png",
   });
 
   return (
@@ -19,7 +44,7 @@ export const Board = (): JSX.Element => {
         <img
           className="w-full h-full absolute top-0 left-0"
           alt="Background"
-          src="/rectangle-1.svg"
+          src="/background.svg"
         />
 
         <div className="absolute w-full md:w-[650px] h-[650px] top-[346px] left-0 md:left-[-54px] rounded-[324.87px] rotate-[-6.23deg] blur-[350px] [background:linear-gradient(180deg,rgb(220,0,211)_54.43%,rgb(12,250,245)_100%)]" />
@@ -29,7 +54,7 @@ export const Board = (): JSX.Element => {
           <img
             className="h-auto md:h-[114px] w-[200px] md:w-[273px] object-contain"
             alt="Logo"
-            src="/group-10-1.png"
+            src="/logo.png"
           />
           <Button
             variant="ghost"
@@ -56,8 +81,63 @@ export const Board = (): JSX.Element => {
           </a>
         </div>
 
+        {/* Top 3 Moon Rulers heading */}
+        <h2 className="text-lg sm:text-xl italic font-semibold text-white mb-4 sm:mb-6 px-4 md:px-[50px] mt-6 md:mt-[61px]">
+          Top 3 Moon Rulers
+        </h2>
+
         {/* Coin cards grid */}
-        <ScrollArea className="relative z-10 h-auto mx-4 md:mx-[50px] mt-6 md:mt-[40px]">
+        <ScrollArea className="relative z-10 h-auto mx-4 md:mx-[50px] mt-6 md:mt-[40px] overflow-visible">
+          {/* Top Moon Ruler Cards */}
+          <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-x-[66px] md:gap-y-[22px] mb-4 sm:mb-6">
+            {topCoins.map((coin) => (
+              <Card
+                key={coin.id}
+                className="relative rounded-[19px] border-[1px] border-[#E056D7] bg-[#1A0B38]/60 backdrop-blur-sm h-[171px]"
+              >
+                <CardContent className="p-0 h-full">
+                  <div className="flex h-full">
+                    <div className="relative w-[120px] sm:w-[149px] h-full">
+                      <img
+                        className="w-full h-full object-cover"
+                        alt="Coin"
+                        src="/coin.png"
+                      />
+                      <div className="absolute bottom-0 left-0 w-4 h-4 bg-gradient-to-br from-[#E056D7] to-[#3AB0EA] transform rotate-45" />
+                    </div>
+                    <div className="flex-1 p-3 sm:p-4">
+                      <div className="text-lg sm:text-[22px] font-bold text-[#95B2F1]">
+                        {coin.name}
+                      </div>
+                      {coin.hasDetails && (
+                        <div className="space-y-1 sm:space-y-1.5 mt-1 sm:mt-2">
+                          <div className="text-white text-[12px] sm:text-[13px] italic font-semibold">
+                            {coin.ticker}
+                          </div>
+                          <div className="text-white text-[12px] sm:text-[13px] italic font-semibold line-clamp-2">
+                            {coin.description}
+                          </div>
+                          <div className="text-white text-[12px] sm:text-[13px] italic font-semibold">
+                            Created by {coin.creator}
+                          </div>
+                          <div className="text-white text-[12px] sm:text-[13px] italic font-semibold">
+                            Market Cap : {coin.marketCap}
+                          </div>
+                        </div>
+                      )}
+                      <img
+                        className="absolute w-[80px] sm:w-[104px] h-[80px] sm:h-[104px] -top-6 sm:-top-6 -right-4 sm:-right-6"
+                        alt="Astronaut"
+                        src="/moonruler.png"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-x-[66px] md:gap-y-[22px] pb-4">
             {coinCards.map((coin, index) => (
               <Card

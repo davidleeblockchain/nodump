@@ -25,7 +25,7 @@ export const Create = (): JSX.Element => {
           <img
             className="w-[200px] md:w-[273px] h-auto md:h-[114px] object-cover mb-4 md:mb-0"
             alt="Nodump Logo"
-            src="/group-10-1.png"
+            src="/logo.png"
           />
           <Button
             variant="ghost"
