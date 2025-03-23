@@ -87,7 +87,7 @@ export const Board = (): JSX.Element => {
         </h2>
 
         {/* Coin cards grid */}
-        <ScrollArea className="relative z-10 h-auto mx-4 md:mx-[50px] mt-6 md:mt-[40px] overflow-visible">
+        <ScrollArea className="relative z-10 h-auto mx-4 md:mx-[50px] mt-6 md:mt-[40px]">
           {/* Top Moon Ruler Cards */}
           <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-x-[66px] md:gap-y-[22px] mb-4 sm:mb-6">
             {topCoins.map((coin) => (
@@ -126,7 +126,7 @@ export const Board = (): JSX.Element => {
                         </div>
                       )}
                       <img
-                        className="absolute w-[80px] sm:w-[104px] h-[80px] sm:h-[104px] -top-4 sm:-top-10 -right-4 sm:-right-6"
+                        className="absolute w-[80px] sm:w-[104px] h-[80px] sm:h-[104px] -top-4 sm:-top-10 -right-4 sm:-right-6 z-30"
                         alt="Astronaut"
                         src="/moonruler.png"
                       />
@@ -142,7 +142,7 @@ export const Board = (): JSX.Element => {
             {coinCards.map((coin, index) => (
               <Card
                 key={index}
-                className="w-full h-44 bg-[#262634] rounded-[19px] shadow-[-1px_-1px_4px_#00000040] opacity-60 overflow-hidden border-none relative"
+                className="w-full min-h-44 bg-[#262634] rounded-[19px] shadow-[-1px_-1px_4px_#00000040] overflow-hidden border-none relative"
               >
                 <CardContent className="p-0 h-full">
                   <img
