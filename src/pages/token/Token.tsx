@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
+import { Header } from "../../components/Header";
 
 export const Token = (): JSX.Element => {
   // Chart y-axis labels data
@@ -72,18 +73,19 @@ export const Token = (): JSX.Element => {
           <div className="fixed w-[650px] h-[650px] top-[476px] right-0 md:right-[50px] rounded-[324.87px] rotate-[-6.23deg] blur-[350px] [background:linear-gradient(133deg,rgba(220,0,211,1)_54%,rgba(12,250,245,1)_100%)] opacity-50 md:opacity-100" />
 
           {/* Header with Logo and Connect Wallet */}
-          <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <Header />
+          {/* <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
             <div className="w-full max-w-[200px] sm:max-w-[273px] h-auto sm:h-[114px]">
               <img
                 className="w-full h-full object-contain"
                 alt="Group"
-                src="/logo.png"
+                src="/logo.svg"
               />
             </div>
             <button className="text-[#fcfbfb] text-lg sm:text-xl font-medium whitespace-nowrap">
               [ Connect Wallet ]
             </button>
-          </div>
+          </div> */}
 
           {/* Main Content */}
           <div className="relative z-10 flex flex-col lg:flex-row gap-4 sm:gap-6">

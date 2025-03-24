@@ -83,26 +83,27 @@ export const Board = (): JSX.Element => {
           </a>
         </div>
 
-        {/* Top 3 Moon Rulers heading */}
-        <h2 className="text-lg sm:text-xl italic font-semibold text-white mb-4 sm:mb-6 px-4 md:px-[50px] mt-6 md:mt-[61px]">
-          Top 3 Moon Rulers
-        </h2>
-
         {/* Coin cards grid */}
         <ScrollArea className="relative z-10 h-auto mx-4 md:mx-[50px] mt-6 md:mt-[40px]">
+          {/* Top 3 Moon Rulers heading */}
+          <h2 className="text-lg sm:text-xl italic font-semibold text-white mb-6 px-4 mt-6">
+            Top 3 Moon Rulers
+          </h2>
           {/* Top Moon Ruler Cards */}
-          <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-x-[66px] md:gap-y-[22px] mb-4 sm:mb-6">
+          <div className="sm:grid sm:grid-cols-2 lg:grid-cols-3 md:gap-x-[66px] space-y-[40px] mb-4 sm:mb-6 items-baseline">
             {topCoins.map((coin) => (
               <Card
                 key={coin.id}
-                className="relative rounded-[19px] border-[1px] border-[#E056D7] bg-[#1A0B38]/60 backdrop-blur-sm h-[171px]"
+                className="relative rounded-[19px] border-[1px] border-[#E056D7] bg-[#1A0B38]/60 backdrop-blur-sm min-h-32"
               >
                 <CardContent className="p-0 h-full">
                   <div className="flex h-full">
-                    <div className="relative w-[120px] sm:w-[149px] h-full">
+                    <div className="relative h-full">
                       <img
-                        className="w-full h-full object-cover"
+                        className="rounded-[19px] object-cover"
                         alt="Coin"
+                        width={128}
+                        height={128}
                         src="/coin.png"
                       />
                       <div className="absolute bottom-0 left-0 w-4 h-4 bg-gradient-to-br from-[#E056D7] to-[#3AB0EA] transform rotate-45" />
@@ -138,17 +139,22 @@ export const Board = (): JSX.Element => {
               </Card>
             ))}
           </div>
+          
+          {/* Gradient Devider */}
+          <div className="relative h-[1px] mt-[35px] md:mb-[15px] mb-[35px] w-[95%] place-self-center bg-gradient-to-r from-[#E056D7] via-[#9B5CF3] to-[#3AB0EA] border-none" />
+          {/* <div className="border-[1px] border-[#E056D7] h-[1px] my-6 w-[95%] place-self-center" /> */}
 
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-x-[66px] md:gap-y-[22px] pb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-x-[66px] space-y-[40px] mb-4 sm:mb-6 items-baseline">
             {coinCards.map((coin, index) => (
               <Card
                 key={index}
-                className="w-full min-h-44 bg-[#262634] rounded-[19px] shadow-[-1px_-1px_4px_#00000040] overflow-hidden border-none relative"
+                className="w-full min-h-32 bg-[#262634] rounded-[19px] shadow-[-1px_-1px_4px_#00000040] overflow-hidden border-none relative"
               >
                 <CardContent className="p-0 h-full">
                   <img
-                    className="absolute w-[120px] md:w-[149px] h-[140px] md:h-[171px] top-0.5 left-0 object-cover"
+                    className="rounded-md object-cover"
+                    width={128}
+                    height={128}
                     alt="Coin"
                     src={coin.image}
                   />

@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { FaTelegram, FaTwitter, FaInstagram } from "react-icons/fa";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -12,7 +11,7 @@ export const Header = () => {
         <img
           className="h-[80px] sm:h-[100px] md:h-[114px] object-contain cursor-pointer"
           alt="Nodump Logo"
-          src="/logo.png"
+          src="/logo.svg"
           onClick={() => navigate("/")}
         />
         <div className="flex flex-col items-start gap-2">
@@ -39,28 +38,43 @@ export const Header = () => {
             </Link>
             <div className="flex items-center gap-3">
               <a
-                href="https://t.me/yourlink"
+                href="https://"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white hover:text-[#E056D7] transition-colors"
+                className="text-white transition-colors"
               >
-                <FaTelegram size={24} />
+                <img
+                  width={20}
+                  height={20}
+                  alt="telegram"
+                  src="/telegram-logo.webp"
+                />
               </a>
               <a
-                href="https://twitter.com/yourlink"
+                href="https://"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white hover:text-[#E056D7] transition-colors"
+                className="text-white transition-colors"
               >
-                <FaTwitter size={24} />
+                <img
+                  width={20}
+                  height={20}
+                  alt="x"
+                  src="/x-logo.webp"
+                />
               </a>
               <a
-                href="https://instagram.com/yourlink"
+                href="https://"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white hover:text-[#E056D7] transition-colors"
+                className="text-white transition-colors"
               >
-                <FaInstagram size={24} />
+                <img
+                  width={20}
+                  height={20}
+                  alt="instagram"
+                  src="/instagram-logo.webp"
+                />
               </a>
             </div>
           </div>
