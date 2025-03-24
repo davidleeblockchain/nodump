@@ -1,71 +1,112 @@
 import React from "react";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/avatar";
 import { Card, CardContent } from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs";
 
 export const Profile = (): JSX.Element => {
-  const profileData = {
+  // User profile data
+  const userData = {
     username: "@Gabit4r",
-    followers: "3 Followers",
-    description: "Your Description Your Description Your Description Your Description Your Description Your Description Your Description Your Description Your Description Your Description Your Description Your Description Your Description Your Description Your Description Your Description",
-    walletId: "93uf93jbvue8933jf02ndpk29gfj3mc9iem0hp3hfuitk",
+    followers: 3,
+    description:
+      "Your Description Your Description Your Description Your Description Your Description Your Description Your Description Your Description Your Description\nYour Description Your Description Your Description Your Description Your Description Your Description",
+    walletAddress: "93uf93jbvue8933jf02ndpk29gfj3mc9iem0hp3hfuitk",
   };
 
-  const tabs = [
-    { label: "Coins Held", isActive: true },
-    { label: "Replies", isActive: false },
-    { label: "Notification", isActive: false },
-    { label: "Coins Created", isActive: false },
-    { label: "Followers", isActive: false },
-    { label: "Following", isActive: false },
+  // Navigation tabs data
+  const tabItems = [
+    { id: "coins-held", label: "Coins Held" },
+    { id: "replies", label: "Replies" },
+    { id: "notification", label: "Notification" },
+    { id: "coins-created", label: "Coins Created" },
+    { id: "followers", label: "Followers" },
+    { id: "following", label: "Following" },
   ];
 
   return (
-    <div className="bg-[#100425] min-h-screen">
-      <div className="max-w-[1366px] mx-auto px-3 sm:px-6 md:px-8 lg:px-12 py-4 sm:py-6 md:py-8 relative">
+    <div className="bg-dark-purple flex flex-row justify-center w-full min-h-screen">
+      <div className="bg-dark-purple overflow-x-hidden w-full min-h-screen relative">
         {/* Background gradient */}
-        <div className="absolute w-full sm:w-[650px] h-[650px] top-[346px] left-0 sm:left-[33px] rounded-[324.87px] rotate-[-6.23deg] blur-[350px] [background:linear-gradient(133deg,rgba(220,0,211,1)_54%,rgba(12,250,245,1)_100%)]" />
-        
-        <Card className="bg-[#1A0B38]/60 backdrop-blur-sm border-[#E056D7] rounded-[20px]">
-          <CardContent className="p-4 sm:p-6 md:p-8">
-            {/* Profile Header */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
-              <div className="w-20 sm:w-16 h-20 sm:h-16 rounded-full overflow-hidden bg-white/10 flex-shrink-0">
-                <img
-                  src="/3d-astronaut-on-transparent-background-free-png-2.png"
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex-1 text-center sm:text-left">
-                <h1 className="text-xl text-white font-medium mb-1">{profileData.username}</h1>
-                <p className="text-white/80 text-sm mb-3">{profileData.followers}</p>
-                <p className="text-white/80 text-sm mb-4 leading-relaxed">{profileData.description}</p>
-                <div className="bg-[#262634] rounded-[10px] p-3">
-                  <p className="text-white/80 text-xs sm:text-sm font-medium break-all">{profileData.walletId}</p>
-                </div>
-              </div>
-            </div>
+        <div className="absolute w-full h-full top-0 left-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/50 via-dark-purple to-dark-purple" />
 
-            {/* Tabs */}
-            <div className="flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-4 mt-6 sm:mt-8">
-              {tabs.map((tab, index) => (
-                <button
-                  key={index}
-                  className={`px-3 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors whitespace-nowrap
-                    ${tab.isActive 
-                      ? 'bg-[#00D1FF] text-white' 
-                      : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+        {/* Gradient effect */}
+        <div className="absolute w-[250px] md:w-[650px] h-[250px] md:h-[650px] top-[146px] md:top-[346px] left-[13px] md:left-[33px] rounded-[324.87px] rotate-[-6.23deg] blur-[350px] bg-gradient-primary" />
+
+        {/* Profile section */}
+        <div className="relative z-10 p-4 md:p-14">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-4">
+            <Avatar className="w-[54px] h-[54px]">
+              <AvatarImage src="/ellipse-4.png" alt="Profile" />
+              <AvatarFallback>GA</AvatarFallback>
+            </Avatar>
+
+            <div className="flex flex-col items-center md:items-start text-center md:text-left">
+              <h2 className="font-medium text-text-white text-lg">
+                {userData.username}
+              </h2>
+              <p className="font-normal text-text-white text-base">
+                {userData.followers} Followers
+              </p>
+              <p className="font-medium text-text-white text-base leading-[25px] mt-4 max-w-full md:max-w-[600px] whitespace-pre-line">
+                {userData.description}
+              </p>
+            </div>
+          </div>
+
+          {/* Wallet address input */}
+          <div className="mt-8 md:mt-16 max-w-full">
+            <Input
+              className="w-full h-[45px] rounded-xl shadow-[-1px_-1px_4px_#00000040] bg-transparent text-text-white font-medium text-base px-4 overflow-x-auto"
+              value={userData.walletAddress}
+              readOnly
+            />
+          </div>
+
+          {/* Navigation tabs */}
+          <Tabs defaultValue="coins-held" className="mt-8 md:mt-16 justify-items-center">
+            <TabsList className="bg-transparent border-none flex flex-wrap md:flex-nowrap gap-2 md:gap-8 justify-center md:justify-start">
+              {tabItems.map((tab) => (
+                <TabsTrigger
+                  key={tab.id}
+                  value={tab.id}
+                  className="font-medium text-sm md:text-base data-[state=active]:bg-accent-blue data-[state=active]:text-text-white data-[state=active]:opacity-100 data-[state=inactive]:text-text-white data-[state=inactive]:opacity-50 data-[state=active]:rounded-[7px] data-[state=active]:px-3 data-[state=active]:py-1"
                 >
                   {tab.label}
-                </button>
+                </TabsTrigger>
               ))}
-            </div>
+            </TabsList>
 
-            {/* Content Area */}
-            <div className="mt-6 sm:mt-8 min-h-[300px] sm:min-h-[400px] bg-[#262634]/50 rounded-[20px]">
-              {/* Empty state or future content */}
-            </div>
-          </CardContent>
-        </Card>
+            {/* Tab content */}
+            <TabsContent value="coins-held" className="mt-8">
+              <Card className="w-full min-h-[365px] bg-light-purple rounded-[5px] border-none">
+                <CardContent className="p-0">
+                  {/* Content for Coins Held tab */}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Other tab contents */}
+            {tabItems.slice(1).map((tab) => (
+              <TabsContent key={tab.id} value={tab.id} className="mt-8">
+                <Card className="min-w-[340px] md:w-[750px] min-h-[365px] bg-light-purple rounded-[5px] border-none">
+                  <CardContent className="p-0">
+                    {/* Content for other tabs */}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            ))}
+          </Tabs>
+        </div>
       </div>
     </div>
   );

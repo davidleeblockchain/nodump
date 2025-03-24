@@ -7,6 +7,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'dark-purple': '#100425',
+        'light-purple': '#5c3f77',
+        'accent-blue': '#35c9ee',
+        'text-white': '#fcfbfb',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -41,6 +45,9 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      backgroundImage: {
+        'gradient-primary': 'linear-gradient(133deg, rgba(220,0,211,1) 54%, rgba(12,250,245,1) 100%)',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -48,6 +55,7 @@ module.exports = {
       },
       fontFamily: {
         sans: [
+          "Inter",
           "ui-sans-serif",
           "system-ui",
           "sans-serif",
