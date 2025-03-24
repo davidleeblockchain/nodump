@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Board } from "./pages/board";
 import { Create } from "./pages/create";
 import { Token } from "./pages/token";
+import { Profile } from "./pages/profile";
 
 createRoot(document.getElementById("app") as HTMLElement).render(
   <StrictMode>
@@ -12,6 +13,7 @@ createRoot(document.getElementById("app") as HTMLElement).render(
         <Route path="/" element={<Board />} />
         <Route path="/create" element={<Create />} />
         <Route path="/token" element={<Token />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

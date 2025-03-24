@@ -12,6 +12,7 @@ import {
   SelectItem,
 } from "../../components/ui/select";
 import { Textarea } from "../../components/ui/textarea";
+import { Header } from "../../components/Header";
 
 export const Create = (): JSX.Element => {
   return (
@@ -21,7 +22,8 @@ export const Create = (): JSX.Element => {
         <div className="fixed w-[250px] sm:w-[450px] md:w-[650px] h-[250px] sm:h-[450px] md:h-[650px] bottom-0 right-0 rounded-[324.87px] blur-[150px] sm:blur-[250px] md:blur-[350px] [background:linear-gradient(133deg,rgba(220,0,211,0.4)_54%,rgba(12,250,245,0.4)_100%)] md:[background:linear-gradient(133deg,rgba(220,0,211,1)_54%,rgba(12,250,245,1)_100%)]" />
 
         {/* Header Section */}
-        <div className="relative z-10 flex flex-col md:flex-row justify-between items-center px-4 md:px-[58px] pt-4 md:pt-7 gap-4">
+        <Header />
+        {/* <div className="relative z-10 flex flex-col md:flex-row justify-between items-center px-4 md:px-[58px] pt-4 md:pt-7 gap-4">
           <img
             className="w-[200px] md:w-[273px] h-auto md:h-[114px] object-cover mb-4 md:mb-0"
             alt="Nodump Logo"
@@ -33,7 +35,7 @@ export const Create = (): JSX.Element => {
           >
             [ Connect Wallet ]
           </Button>
-        </div>
+        </div> */}
 
         {/* relative z-10 h-auto mx-4 md:mx-[50px] mt-6 md:mt-[40px] w-full rounded-[inherit] */}
         {/* Form Container */}

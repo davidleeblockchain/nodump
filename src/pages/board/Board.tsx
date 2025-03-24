@@ -4,6 +4,7 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { ScrollArea } from "../../components/ui/scroll-area";
+import { Header } from "../../components/Header";
 
 export const Board = (): JSX.Element => {
   // Data for coin cards
@@ -41,16 +42,17 @@ export const Board = (): JSX.Element => {
     <div className="bg-[#100425] flex flex-row justify-center w-full min-h-screen">
       <div className="bg-[#100425] w-full max-w-full h-min-screen relative overflow-hidden">
         {/* Background elements */}
-        <img
+        {/* <img
           className="w-full h-full absolute top-0 left-0"
           alt="Background"
           src="/background.svg"
-        />
+        /> */}
 
         <div className="absolute w-full md:w-[650px] h-[650px] top-[346px] left-0 md:left-[-54px] rounded-[324.87px] rotate-[-6.23deg] blur-[350px] [background:linear-gradient(180deg,rgb(220,0,211)_54.43%,rgb(12,250,245)_100%)]" />
 
         {/* Header with logo and wallet button */}
-        <header className="relative z-10 flex flex-col md:flex-row justify-between items-center px-4 md:px-[58px] pt-4 md:pt-7 gap-4">
+        <Header />
+        {/* <header className="relative z-10 flex flex-col md:flex-row justify-between items-center px-4 md:px-[58px] pt-4 md:pt-7 gap-4">
           <img
             className="h-auto md:h-[114px] w-[200px] md:w-[273px] object-contain"
             alt="Logo"
@@ -62,7 +64,7 @@ export const Board = (): JSX.Element => {
           >
             [ Connect Wallet ]
           </Button>
-        </header>
+        </header> */}
 
         {/* SearchIcon and Create New Coin section */}
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-center px-4 md:px-[50px] mt-6 md:mt-[61px] gap-4">
