@@ -12,6 +12,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs";
+import { Header } from "../../components/Header";
 
 export const Profile = (): JSX.Element => {
   // User profile data
@@ -35,15 +36,17 @@ export const Profile = (): JSX.Element => {
 
   return (
     <div className="bg-dark-purple flex flex-row justify-center w-full min-h-screen">
-      <div className="bg-dark-purple overflow-x-hidden w-full min-h-screen relative">
+      <div className="bg-dark-purple w-full min-h-screen relative">
         {/* Background gradient */}
-        <div className="absolute w-full h-full top-0 left-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/50 via-dark-purple to-dark-purple" />
+        {/* <div className="absolute w-full h-full top-0 left-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/50 via-dark-purple to-dark-purple" /> */}
 
         {/* Gradient effect */}
-        <div className="absolute w-[250px] md:w-[650px] h-[250px] md:h-[650px] top-[146px] md:top-[346px] left-[13px] md:left-[33px] rounded-[324.87px] rotate-[-6.23deg] blur-[350px] bg-gradient-primary" />
+        <div className="absolute w-[250px] md:w-[650px] h-[250px] md:h-[650px] bottom-0 left-[13px] md:left-[33px] rounded-[324.87px] blur-[350px] bg-gradient-primary" />
+
+        <Header />
 
         {/* Profile section */}
-        <div className="relative z-10 p-4 md:p-14">
+        <div className="relative z-10 md:px-14 pb-14">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-4">
             <Avatar className="w-[54px] h-[54px]">
               <AvatarImage src="/ellipse-4.png" alt="Profile" />
