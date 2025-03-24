@@ -67,13 +67,13 @@ export const Token = (): JSX.Element => {
 
   return (
     <div className="min-h-screen bg-[#100425] flex flex-col justify-center w-full">
-      <div className="w-full max-w-[1366px] mx-auto relative min-h-screen">
+      <div className="w-full mx-auto relative min-h-screen">
+        {/* Header with Logo and Connect Wallet */}
+        <Header />
         <div className="relative w-full min-h-screen p-4 sm:p-6 md:p-8">
           {/* Background gradient */}
           <div className="fixed w-[650px] h-[650px] top-[476px] right-0 md:right-[50px] rounded-[324.87px] rotate-[-6.23deg] blur-[350px] [background:linear-gradient(133deg,rgba(220,0,211,1)_54%,rgba(12,250,245,1)_100%)] opacity-50 md:opacity-100" />
 
-          {/* Header with Logo and Connect Wallet */}
-          <Header />
           {/* <div className="relative z-10 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
             <div className="w-full max-w-[200px] sm:max-w-[273px] h-auto sm:h-[114px]">
               <img
@@ -88,7 +88,7 @@ export const Token = (): JSX.Element => {
           </div> */}
 
           {/* Main Content */}
-          <div className="relative z-10 flex flex-col lg:flex-row gap-4 sm:gap-6">
+          <div className="relative z-10 flex flex-col lg:flex-row gap-6 sm:gap-8 md:gap-12">
             {/* Chart Card */}
             <Card className="flex-grow basis-full lg:basis-2/3 min-h-[20rem] sm:min-h-[30rem] rounded-[25px] shadow-[-6px_4px_10px_#00000040] backdrop-blur-[70px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(70px)_brightness(100%)] border-0">
               <CardContent className="p-0 h-full relative">
