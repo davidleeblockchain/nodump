@@ -1,6 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -81,7 +81,8 @@ export const Header = () => {
         </div>
       </div>
       <div className="text-white text-lg sm:text-xl font-medium">
-        [Connect Wallet]
+        {/* [Connect Wallet] */}
+        <WalletMultiButton style={{backgroundColor: 'transparent'}} />
       </div>
     </div>
   );
