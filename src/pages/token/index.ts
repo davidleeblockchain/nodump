@@ -1,1 +1,1 @@
-export { Token } from "./Token";
+export { TokenPage } from "./Token";
