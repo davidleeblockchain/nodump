@@ -9,9 +9,10 @@
     }
   ],
   "compilerOptions": {
-    "jsx": "react-jsx",
+    "jsx": "react",
     "module": "NodeNext",
     "allowJs": true,
+    "checkJs": true,
     "types": ["vite/client"]
   }
 }

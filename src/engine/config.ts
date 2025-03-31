@@ -14,7 +14,7 @@ const isMainNet = IS_MAINNET === "true";
 
 export const networkUrl = !isMainNet 
     ? 'https://virulent-hidden-theorem.solana-devnet.quiknode.pro/ef28b01d86d88e6f746c46c3004728933d646816/' 
-    : 'https://mainnet.helius-rpc.com/?api-key=b0436df3-87ca-4170-8ea4-6d757ec51f52';
+    : 'https://long-proportionate-scion.solana-mainnet.quiknode.pro/0edef4ae521901a7ce414dce4dc9f70f398af1a7/';
 
 export const PROGRAMIDS = isMainNet ? MAINNET_PROGRAM_ID : DEVNET_PROGRAM_ID;
 export const BUNDLR_URL = isMainNet ? "https://node1.bundlr.network" : "https://devnet.bundlr.network";

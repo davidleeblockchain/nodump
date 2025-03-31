@@ -20,7 +20,6 @@ export async function updateToken(name: string, ticker: string, desc: string, lo
 
 export async function findTokens(name: string, sort_condition: string, sort_order: string, nsfw: number) {
   const result = await axiosPublic.get(`/token/find_tokens?name=${name}&sort_condition=${sort_condition.replace('sort: ', '')}&sort_order=${sort_order.replace('Order: ', '')}&include_nsfw=${nsfw}`)
-  console.log('findTokens---', result.data)
   return result.data
 }
 

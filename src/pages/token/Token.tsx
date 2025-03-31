@@ -61,7 +61,7 @@ export const TokenPage = (): JSX.Element => {
   const [isSlippageDialogOpen, setIsSlippageDialogOpen] = useState(false)
   const [currentMode, setCurrentMode] = useState('buy')
   const [currentTab, setCurrentTab] = useState('Thread')
-  const [amount, setAmount] = useState(0)
+  const [amount, setAmount] = useState<string | ''>('');
   interface TokenInfo {
     name: string;
     ticker: string;
@@ -172,10 +172,7 @@ export const TokenPage = (): JSX.Element => {
 
   const getTokenInfo = async () => {
     const userId = getUserId()
-    // console.log("addr === ", addr, "userId === ", userId) 
     const result = await getToken(addr, userId)
-    // const result = await getToken(addr, "6793c433b41e179bb177a97a")
-    // console.log("tokenInfo === ", result)
     setTokenInfo(result)
   }
 
@@ -190,7 +187,7 @@ export const TokenPage = (): JSX.Element => {
 
   const onChangeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (Number(e.target.value) < 0) return;
-    setAmount(Number(e.target.value));
+    setAmount(e.target.value);
   };
 
   const onTrade = () => {
@@ -205,12 +202,12 @@ export const TokenPage = (): JSX.Element => {
     }
 
     if (currentMode === 'buy') {
-      if (tokenInfo?.solBalance || 0 < amount) {
+      if (tokenInfo?.solBalance < Number(amount)) {
         toast.error('Insufficient balance!');
         return;
       }
     } else {
-      if (tokenInfo?.tokenBalance || 0 < amount) {
+      if (tokenInfo?.tokenBalance < Number(amount)) {
         toast.error('Insufficient balance!');
         return;
       }
@@ -532,7 +529,7 @@ export const TokenPage = (): JSX.Element => {
                   <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setIsSlippageDialogOpen(true)}>Set max slippage</button>
                 </div>
                 <div className='relative'>
-                  <input value={amount} onChange={onChangeAmount} type='text' className='border-gray-200 border-2 text-white p-2 w-full bg-transparent rounded placeholder-white' placeholder='0.0' />
+                  <input value={amount} onChange={onChangeAmount} type='number' className='border-gray-200 border-2 text-white p-2 w-full bg-transparent rounded placeholder-white' placeholder='0.0' />
                   {currentMode === 'buy' ? (
                     <div className='absolute right-4 inset-y-4 flex items-center gap-[10px]'>
                       <p className='text-sm text-white uppercase'>{currentCoin === 'sol' ? 'SOL' : tokenInfo?.ticker}</p>
@@ -559,18 +556,18 @@ export const TokenPage = (): JSX.Element => {
                 </div>
                 {currentMode === 'buy' ? (
                   <div className='flex gap-1'>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(0)}>reset</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(1)}>1 SOL</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(5)}>5 SOL</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(10)}>10 SOL</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount('0')}>reset</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount('1')}>1 SOL</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount('5')}>5 SOL</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount('10')}>10 SOL</button>
                   </div>
                 ) : (
                   <div className='flex gap-1'>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(0)}>reset</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount((tokenInfo?.tokenBalance || 0) / 4)}>25%</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount((tokenInfo?.tokenBalance || 0) / 2)}>50%</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(((tokenInfo?.tokenBalance || 0) / 4) * 3)}>75%</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(tokenInfo?.tokenBalance || 0)}>100%</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount('0')}>reset</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(String(tokenInfo?.tokenBalance / 4))}>25%</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(String(tokenInfo?.tokenBalance / 2))}>50%</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(String((tokenInfo?.tokenBalance / 4) * 3))}>75%</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(String(tokenInfo?.tokenBalance))}>100%</button>
                   </div>
                 )}
                 <button type='button' className="bg-green-400 rounded-md py-2 text-black text-base font-bold mt-2" onClick={onTrade}>Place trade</button>
@@ -593,7 +590,7 @@ export const TokenPage = (): JSX.Element => {
             )}
             {/* Luka: show on chart */}
             {addr !== undefined && tokenInfo !== null && chartType === 'pump chart' && (visibleSection === 'chart' || isLargeScreen) && (
-              <Chart stock={"Stock"} interval="1" width="100%" height="100%" tokenId={addr} symbol={tokenInfo?.ticker + "/Pump"} />
+              <Chart stock={"Stock"} interval="1" width="100%" height="100%" tokenId={addr} symbol={tokenInfo?.ticker + ":Pump"} />
             )}
             {chartType === 'current chart' && (
               <iframe className={`w-full h-[600px]`} src={`https://dexscreener.com/solana/${addr}?embed=1&theme=dark&trades=0&info=0`}></iframe>
@@ -630,7 +627,7 @@ export const TokenPage = (): JSX.Element => {
                         <div className='flex flex-row gap-4'>
                           <p className='text-sm text-white flex flex-col'>
                             <span className='font-bold'>{`${tokenInfo?.name} (ticker: ${tokenInfo?.ticker})`}</span>
-                            <span className='text-[#808080]'>{tokenInfo?.desc}</span>
+                            <span className='text-[#808080]' style={{ overflowWrap: 'anywhere' }}>{tokenInfo?.desc}</span>
                           </p>
                           
                           <img
@@ -703,7 +700,7 @@ export const TokenPage = (): JSX.Element => {
                       </div>
                     )
                   })}
-                  <p className='flex text-xl font-semibold hover:underline cursor-pointer w-fit m-auto' onClick={() => {
+                  <p className='flex text-white text-xl font-semibold hover:underline cursor-pointer w-fit m-auto' onClick={() => {
                     setMentionReplyId('')
                     setIsPostDialogOpen(true)
                   }}>
@@ -829,7 +826,7 @@ export const TokenPage = (): JSX.Element => {
                   <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setIsSlippageDialogOpen(true)}>Set max slippage</button>
                 </div>
                 <div className='relative'>
-                  <input value={amount} onChange={onChangeAmount} type='text' className='border-green-400 border-2 text-white p-2 w-full bg-transparent rounded placeholder-white' placeholder='0.0' />
+                  <input value={amount} onChange={onChangeAmount} type='number' className='border-green-400 border-2 text-white p-2 w-full bg-transparent rounded placeholder-white' placeholder='0.0' />
                   {currentMode === 'buy' ? (
                     <div className='absolute right-4 inset-y-4 flex items-center gap-[10px]'>
                       <p className='text-sm text-white uppercase'>{currentCoin === 'sol' ? 'SOL' : tokenInfo?.ticker}</p>
@@ -856,18 +853,18 @@ export const TokenPage = (): JSX.Element => {
                 </div>
                 {currentMode === 'buy' ? (
                   <div className='flex gap-1'>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(0)}>reset</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(1)}>1 SOL</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(5)}>5 SOL</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(10)}>10 SOL</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount('0')}>reset</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount('1')}>1 SOL</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount('5')}>5 SOL</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount('10')}>10 SOL</button>
                   </div>
                 ) : (
                   <div className='flex gap-1'>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(0)}>reset</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount((tokenInfo?.tokenBalance || 0) / 4)}>25%</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount((tokenInfo?.tokenBalance || 0) / 2)}>50%</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(((tokenInfo?.tokenBalance || 0) / 4) * 3)}>75%</button>
-                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(tokenInfo?.tokenBalance || 0)}>100%</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount('0')}>reset</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(String(tokenInfo?.tokenBalance / 4))}>25%</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(String(tokenInfo?.tokenBalance / 2))}>50%</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(String((tokenInfo?.tokenBalance / 4) * 3))}>75%</button>
+                    <button type='button' className='bg-[#363636] px-4 py-1 rounded-md text-sm text-white' onClick={() => setAmount(String(tokenInfo?.tokenBalance))}>100%</button>
                   </div>
                 )}
                 <button type='button' className="bg-green-400 rounded-md py-2 text-black text-base font-bold mt-2" onClick={onTrade}>Place trade</button>
@@ -942,10 +939,10 @@ export const TokenPage = (): JSX.Element => {
               </p>
               <div className='flex flex-col gap-2'>
                 {tokenInfo?.crownDate ? (
-                  <p className='text-base text-[#ffff00] font-medium'>Crowned king of the hill on {tokenInfo?.crownDate?.toLocaleDateString()}</p>
+                  <p className='text-base text-[#ffff00] font-medium'>Crowned Moon Ruler on {tokenInfo?.crownDate?.toLocaleDateString()}</p>
                 ) : (
                   <>
-                    <p className='text-sm text-white font-medium'>king of the hill progress: {tokenInfo?.kingOfTheHillProgress.toFixed(1)}%</p>
+                    <p className='text-sm text-white font-medium'>Moon Ruler Progress: {tokenInfo?.kingOfTheHillProgress.toFixed(1)}%</p>
                     {/* <Progress progress={tokenInfo!.kingOfTheHillProgress} size="sm" color="white" theme={ProgressTheme} /> */}
                     <ProgressBar value={tokenInfo?.kingOfTheHillProgress} className="h-2" />
                     <p className='text-xs font-medium text-[#808080]'>
@@ -1078,7 +1075,7 @@ function TradeDialog({ isTradeDialogOpen, setIsTradeDialogOpen, tokenMint, ticke
   setIsTradeDialogOpen: (value: boolean) => void; 
   tokenMint: string; 
   ticker: string; 
-  amount: number; 
+  amount: string; 
   isBuy: boolean; 
 }) {
   const comment = useRef<HTMLTextAreaElement | null>(null)

@@ -82,18 +82,9 @@ function getWindowDimensions() {
   };
 }
 
-interface ChartProps {
-  stock: string;
-  symbol: string;
-  tokenId: string;
-  interval: string;
-  width: string;
-  height: string;
-}
-
-const Chart = (props: ChartProps) => {
+const Chart = (props) => {
   const { symbol, tokenId, interval, width, height } = props;
-  const [windowDimensions, setWindowDimensions] = useState<{ width: number; height: number } | null>(null);
+  const [windowDimensions, setWindowDimensions] = useState(null);
   const offset = (-1 * new Date().getTimezoneOffset()) / 60;
   const below600 = useMedia('(max-width: 640px)')
   const below800 = useMedia('(max-width: 800px)')
@@ -113,24 +104,11 @@ const Chart = (props: ChartProps) => {
   }, [below800])
 
   const chartHeight = isMobile ? 600 : 450
-  const chartWidth = isBook ? isMobile ? windowDimensions!.width - 60 : windowDimensions!.width : width
+  const chartWidth = isBook ? isMobile ? windowDimensions.width - 60 : windowDimensions.width : width
 
   useEffect(() => {
-    const checkTradingView = () => {
-      if (!window.TradingView) {
-        console.error("❌ TradingView is not loaded yet!");
-        return false;
-      }
-      return true;
-    };
-
-    const loadChart = () => {
-      if (!checkTradingView()) return;
-
     if (symbol && interval) {
       console.log("====================================\n", Datafeed(tokenId))
-
-      // @ts-ignore
       const widget = (window.tvWidget = new TradingView.widget({
         symbol: symbol,
         interval: interval,
@@ -142,7 +120,6 @@ const Chart = (props: ChartProps) => {
         library_path: '/charting_library/',
         toolbar_bg: '#0b1217',
         overrides: {
-          'paneProperties.rightMargin': 0,
           'paneProperties.background': '#0b1217',
           'paneProperties.backgroundType': 'solid',
           'paneProperties.backgroundGradientEndColor': '#0b1217',
@@ -155,43 +132,18 @@ const Chart = (props: ChartProps) => {
           'mainSeriesProperties.candleStyle.borderDownColor': '#E20E7C', // Down Candle Border Color
           'mainSeriesProperties.candleStyle.drawBorder': false, // Disable candle borders
           'mainSeriesProperties.minTick': '100000000,1,false',
-          "scalesProperties.textSize": 18,
-          "scalesProperties.showLeftScale": false,
         },
         disabled_features: ['header_symbol_search'],
         time_frames: timeFrames,
         theme: 'Dark',
-        // @ts-ignore
         timezone: TIMEZONE[offset][0],
       }));
 
-      // widget.onChartReady(async () => {
-        // widget.activeChart().setTimezone('UTC');
-      // });
-    };
+      widget.onChartReady(async () => {
+        widget.activeChart().setTimezone('UTC');
+      });
     }
-
-    if (window.TradingView) {
-      loadChart();
-    } else {
-      // 🔥 Dynamically import TradingView if it's not already loaded
-      console.log("+++++++++++++++++++++++++++++++++++\n")
-      const script = document.createElement("script");
-      script.src = "/charting_library/charting_library.standalone.js"; // Ensure the correct file
-      script.onload = () => {
-        console.log("📈 TradingView Loaded!");
-        console.log("999999999999999", window.TradingView);
-        loadChart();
-      };
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      if (window.tvWidget) {
-        window.tvWidget.remove();
-      }
-    };
-  }, []);
+  }, [symbol, interval]);
   return (
     <>
       <div id="tv_chart_container" style={{ height: chartHeight, backgroundColor: 'black' }} />

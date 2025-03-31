@@ -31,36 +31,36 @@ export const Header = () => {
     if (!wallet) logout();
   }, [wallet]);
 
-  useEffect(() => {
-    const websocket = new WebSocket(baseURL);
-    setWs(websocket);
-    websocket.onopen = () => {
-      console.log("websocket opened!");
-    };
+  // useEffect(() => {
+  //   const websocket = new WebSocket(baseURL);
+  //   setWs(websocket);
+  //   websocket.onopen = () => {
+  //     console.log("websocket opened!");
+  //   };
 
-    websocket.onmessage = (event) => {
-      console.log("websocket onmessage!");
-      const data = JSON.parse(atob(event.data)).message;
+  //   websocket.onmessage = (event) => {
+  //     console.log("websocket onmessage!");
+  //     const data = JSON.parse(atob(event.data)).message;
 
-      if (data.type === DATATYPE_LASTTOKEN) setLastTokenInfo(data.data);
-      else if (data.type === DATATYPE_LASTTRADE) {
-        setLastTradeInfo(data.data);
-        getCheckoutStatus();
-      }
-    };
-  }, []);
+  //     if (data.type === DATATYPE_LASTTOKEN) setLastTokenInfo(data.data);
+  //     else if (data.type === DATATYPE_LASTTRADE) {
+  //       setLastTradeInfo(data.data);
+  //       getCheckoutStatus();
+  //     }
+  //   };
+  // }, []);
 
-  const getCheckoutStatus = () => {
-    if (div1Ref.current) {
-      if (div1Ref.current.classList.contains("animate-shake") === true)
-        div1Ref.current.classList.remove("animate-shake");
-      else div1Ref.current.classList.add("animate-shake");
+  // const getCheckoutStatus = () => {
+  //   if (div1Ref.current) {
+  //     if (div1Ref.current.classList.contains("animate-shake") === true)
+  //       div1Ref.current.classList.remove("animate-shake");
+  //     else div1Ref.current.classList.add("animate-shake");
 
-      if (div2Ref.current && div2Ref.current.classList.contains("animate-shake") === true)
-        div2Ref.current.classList.remove("animate-shake");
-      else if (div2Ref.current) div2Ref.current.classList.add("animate-shake");
-    }
-  };
+  //     if (div2Ref.current && div2Ref.current.classList.contains("animate-shake") === true)
+  //       div2Ref.current.classList.remove("animate-shake");
+  //     else if (div2Ref.current) div2Ref.current.classList.add("animate-shake");
+  //   }
+  // };
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-center mb-6 sm:mb-8 md:mb-12 px-4 md:px-[58px] pt-4 md:pt-7 gap-4">
