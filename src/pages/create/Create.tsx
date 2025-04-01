@@ -53,9 +53,10 @@ export const Create = (): JSX.Element => {
   const [imageName, setImageName] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imgBuffer, setImageBuffer] = useState()
+  const [coinType, setCoinType] = useState<string>("meme");
   // const [whitePaperName, setWhitePaperName] = useState<string>("");
   // const [whitePaperFile, setWhitePaperFile] = useState<File | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
+  // const [isSaving, setIsSaving] = useState(false);
 
   const handleCreateCoin = () => {
     if (coinName.current?.value === '') {
@@ -94,6 +95,10 @@ export const Create = (): JSX.Element => {
     const imageBuffer = event.target.result;
     // console.log('imageBuffer:', imageBuffer);
     setImageBuffer(imageBuffer);
+  };
+
+  const handleTypeChange = (value: string) => {
+    setCoinType(value);
   };
 
   return (
@@ -153,20 +158,7 @@ export const Create = (): JSX.Element => {
 
             <div className="w-full">
               <Label className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]">Type</Label>
-              <RadioGroup defaultValue="utility" className="flex gap-4 sm:gap-8 md:gap-16 mt-4">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value="utility"
-                    id="utility"
-                    className="bg-[#e9c5e4]"
-                  />
-                  <Label
-                    htmlFor="utility"
-                    className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
-                  >
-                    Utility
-                  </Label>
-                </div>
+              <RadioGroup defaultValue="utility" onValueChange={handleTypeChange} className="flex gap-4 sm:gap-8 md:gap-16 mt-4">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem
                     value="meme"
@@ -178,6 +170,19 @@ export const Create = (): JSX.Element => {
                     className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
                   >
                     Meme
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="utility"
+                    id="utility"
+                    className="bg-[#e9c5e4]"
+                  />
+                  <Label
+                    htmlFor="utility"
+                    className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
+                  >
+                    Utility
                   </Label>
                 </div>
               </RadioGroup>
@@ -361,22 +366,26 @@ export const Create = (): JSX.Element => {
             </div>
 
             <div className="space-y-6 w-full flex flex-col justify-between">
-              <div>
-                <Label
-                  htmlFor="idSubmit"
-                  className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px] mb-2"
-                >
-                  ID Submit
-                </Label>
-                <Button
-                  variant="ghost"
-                  className="w-full h-9 mt-2 bg-[#5c3f77] border-none flex items-center justify-center gap-2"
-                >
-                  <UploadIcon className="w-[16px] sm:w-[19px] h-[16px] sm:h-[18px]" />
-                  <span className="font-bold text-[#dddbdb] text-[13px] sm:text-[15px]">
-                    UploadIcon ID
-                  </span>
-                </Button>
+              <div className="md:h-[76px]">
+                {coinType === "utility" && (
+                  <>
+                    <Label
+                      htmlFor="idSubmit"
+                      className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px] mb-2"
+                    >
+                      ID Submit
+                    </Label>
+                    <Button
+                      variant="ghost"
+                      className="w-full h-9 mt-2 bg-[#5c3f77] border-none flex items-center justify-center gap-2"
+                    >
+                      <UploadIcon className="w-[16px] sm:w-[19px] h-[16px] sm:h-[18px]" />
+                      <span className="font-bold text-[#dddbdb] text-[13px] sm:text-[15px]">
+                        UploadIcon ID
+                      </span>
+                    </Button>
+                  </>
+                )}
               </div>
               <div>
                 <Button
