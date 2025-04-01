@@ -5,7 +5,7 @@ import { Card, CardContent } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { ScrollArea } from "../../components/ui/scroll-area";
 import { Header } from "../../components/Header";
-import { findTokens } from "../../api/token/index";
+import { findTokens, getKing } from "../../api/token/index";
 import { Link } from "react-router-dom";
 
 const sortType = [
@@ -33,6 +33,7 @@ export const Board = (): JSX.Element => {
   const showAnimationsRef = useRef(showAnimations);
   const [creatorWallet, setCreatorWallet] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [kingToken, setKingToken] = useState(null);
   const itemsPerPage = 45;
 
 
@@ -43,7 +44,7 @@ export const Board = (): JSX.Element => {
       orderSelected.name,
       includeNSFW
     );
-    // getKingToken();
+    getKingToken();
 
     const interval = setInterval(() => {
       if (tokenDiv.current && showAnimationsRef.current === true) {
@@ -65,6 +66,12 @@ export const Board = (): JSX.Element => {
     );
     // console.log("result === ", result)
     setTokenList(Array.isArray(result) ? result : []);
+  };
+
+  const getKingToken = async () => {
+    const result = await getKing();
+    console.log("King Token === ", result);
+    setKingToken(result);
   };
 
   const handleCreatorClick = (e: any, walletAddr: string) => {
@@ -183,7 +190,7 @@ export const Board = (): JSX.Element => {
                         height={128}
                         src="/coin.png"
                       />
-                      <div className="absolute bottom-0 left-0 w-4 h-4 bg-gradient-to-br from-[#E056D7] to-[#3AB0EA] transform rotate-45" />
+                      {/* <div className="absolute bottom-0 left-0 w-4 h-4 bg-gradient-to-br from-[#E056D7] to-[#3AB0EA] transform rotate-45" /> */}
                     </div>
                     <div className="flex-1 p-3 sm:p-4">
                       <div className="text-lg sm:text-[22px] font-bold text-[#95B2F1]">

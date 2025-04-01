@@ -2,7 +2,7 @@ import { authService } from "../../services";
 import Cookies from "js-cookie";
 
 export const useLogin = () => {
-  const login = async (walletAddr: any) => {
+  const login = async (walletAddr: string) => {
     const user = await authService.login(walletAddr);
     if (user) {
       Cookies.set("currentUser", JSON.stringify(user));

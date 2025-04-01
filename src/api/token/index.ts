@@ -1,19 +1,21 @@
 import { axiosPrivate } from "../axiosPrivate"
 import { axiosPublic } from "../axiosPublic"
 
-export async function uploadMetadata(logoFile: File, metadata: any) {
-  console.log('uploadMetadata---', logoFile, metadata)
+export async function uploadMetadata(logoFile: File/*, whitePaperFile: File*/, metadata: any, mintAddr: string) {
+  // console.log('uploadMetadata---', logoFile, whitePaperFile, metadata, mintAddr)
   const formData = new FormData()
   formData.append('logo', logoFile)
+  // formData.append('whitepaper', whitePaperFile)
   formData.append('metadata', metadata)
+  formData.append('mintaddr', mintAddr)
 
   const response = await axiosPublic.post('/token/upload_metadata', formData);
   return response.data;
 }
 
-export async function updateToken(name: string, ticker: string, desc: string, logo: string, twitter: string | undefined, telegram: string | undefined, website: string | undefined, referral: string | undefined, mintAddr: string) {
+export async function updateToken(name: string, ticker: string, desc: string, logo: string, twitter: string | undefined, telegram: string | undefined, website: string | undefined, referral: string | undefined, mintAddr: string/*, whitepaperuri: string | null*/) {
   const result = await axiosPrivate.put(`/token/update_token`, {
-    name, ticker, desc, logo, twitter, telegram, website, referral, mintAddr
+    name, ticker, desc, logo, twitter, telegram, website, referral, mintAddr/*, whitepaperuri*/
   });
   return result.data;
 }

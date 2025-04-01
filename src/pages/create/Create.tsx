@@ -1,4 +1,4 @@
-import { UploadIcon } from "lucide-react";
+import { UploadIcon, SaveIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import { toast } from "react-toastify"
@@ -29,60 +29,64 @@ import { Textarea } from "../../components/ui/textarea";
 import { Header } from "../../components/Header";
 
 export const Create = (): JSX.Element => {
+  const coinAmounts = [
+    "1,000,000 (1M)",
+    "10,000,000 (10M)",
+    "100,000,000 (100M)",
+    "1,000,000,000 (1B)",
+  ];
+
   const { connected } = useWallet();
 
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
   const coinName = useRef<HTMLInputElement | null>(null);
   const ticker = useRef<HTMLInputElement | null>(null);
   const description = useRef<HTMLTextAreaElement | null>(null);
-  const [coinImage, setCoinImage] = useState<string | null>(null)
-  const [imageName, setImageName] = useState('')
-  const [imageFile, setImageFile] = useState<File | null>(null)
-  const [imgBuffer, setImageBuffer] = useState()
   const twitterLink = useRef<HTMLInputElement | null>(null)
   const telegramLink = useRef<HTMLInputElement | null>(null)
   const websiteLink = useRef<HTMLInputElement | null>(null)
   const referral = useRef<HTMLInputElement | null>(null)
+  const whitepaperLink = useRef<HTMLInputElement>(null);
+  // const whitepaperRef = useRef<HTMLInputElement>(null);
+
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+  const [coinImage, setCoinImage] = useState<string | null>(null)
+  const [imageName, setImageName] = useState('')
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imgBuffer, setImageBuffer] = useState()
+  // const [whitePaperName, setWhitePaperName] = useState<string>("");
+  // const [whitePaperFile, setWhitePaperFile] = useState<File | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleCreateCoin = () => {
     if (coinName.current?.value === '') {
-      console.log("toast no name!!!")
       toast.error('No name!')
       return
     }
     if (imageName === '') {
-      console.log("2")
       toast.error('No image uploaded!')
       return
     }
     if (ticker.current?.value === '') {
-      console.log("3")
       toast.error('No ticker!')
       return
     }
     if (!connected) {
-      console.log("4")
       toast.error('No Wallet Connected!')
       return
     }
     if (referral.current?.value) {
-      console.log("5 --- ", referral.current?.value)
       try {
         if (referral.current?.value) {
-          console.log("6")
           const key = new PublicKey(referral.current.value);
         } else {
-          console.log("7")
           throw new Error('Referral address is undefined');
         }
       } catch (err) {
-        console.log("8")
         toast.error('Invalid referral address!')
         return
       }
     }
 
-    console.log("9")
     setIsDialogOpen(true)
   };
 
@@ -91,6 +95,7 @@ export const Create = (): JSX.Element => {
     // console.log('imageBuffer:', imageBuffer);
     setImageBuffer(imageBuffer);
   };
+
   return (
     <div className="min-h-screen w-full bg-[#100425] flex justify-center">
       <div className="relative w-full min-h-screen">
@@ -153,7 +158,7 @@ export const Create = (): JSX.Element => {
                   <RadioGroupItem
                     value="utility"
                     id="utility"
-                    className="bg-[#5c3f77]"
+                    className="bg-[#e9c5e4]"
                   />
                   <Label
                     htmlFor="utility"
@@ -166,7 +171,7 @@ export const Create = (): JSX.Element => {
                   <RadioGroupItem
                     value="meme"
                     id="meme"
-                    className="bg-[#5c3f77]"
+                    className="bg-[#e9c5e4]"
                   />
                   <Label
                     htmlFor="meme"
@@ -221,22 +226,51 @@ export const Create = (): JSX.Element => {
               </div>
             </div>
 
-            <div className="w-full">
+            {/* <div className="w-full">
               <Label
                 htmlFor="whitePaper"
                 className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
               >
-                White Paper
+                White Paper (Optional)
               </Label>
+              <input
+                type="file"
+                ref={whitePaperRef}
+                accept=".pdf"
+                onChange={handleWhitePaperChange}
+                className="hidden"
+              />
               <Button
                 variant="ghost"
+                onClick={handleWhitePaperClick}
                 className="w-full h-9 mt-2 bg-[#5c3f77] border-none flex items-center justify-center gap-2"
               >
                 <UploadIcon className="w-[16px] sm:w-[19px] h-[16px] sm:h-[18px]" />
-                <span className="font-bold text-[#dddbdb] text-[13px] sm:text-[15px]">
-                  UploadIcon White Paper
+                <span className="font-bold text-[#dddbdb] hover:text-[#5c3f77] text-[13px] sm:text-[15px]">
+                  {whitePaperName || "Upload White Paper"}
                 </span>
               </Button>
+              <Button
+                variant="ghost"
+                onClick={handleSaveWhitePaper}
+                disabled={!whitePaperFile || isSaving}
+                className="w-[70px] h-9 bg-[#5c3f77] rounded-[5px] border-none text-[#dddbdb] font-bold text-[15px] flex justify-center items-center hover:bg-[#6b4a8a] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <SaveIcon className={`w-[19px] h-[18px] ${isSaving ? 'animate-spin' : ''}`} />
+              </Button>
+            </div> */}
+            <div className="w-full">
+              <Label
+                htmlFor="whitepaperLink"
+                className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
+              >
+                White Paper Link (Optional)
+              </Label>
+              <Input
+                id="whitepaperLink"
+                className="w-full h-9 mt-2 bg-[#5c3f77] border-none text-white placeholder:text-[#dddbdb]"
+                ref={whitepaperLink}
+              />
             </div>
 
             <div className="w-full">
@@ -248,13 +282,18 @@ export const Create = (): JSX.Element => {
               </Label>
               <Select>
                 <SelectTrigger className="w-full h-9 mt-2 bg-[#5c3f77] border-none text-white">
-                  <SelectValue placeholder="Select number of coins" />
+                  <SelectValue placeholder="1,000,000,000 (1B)" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#2D1854] border-none text-white">
-                  <SelectItem value="1m" className="text-white hover:bg-[#3D2466] focus:bg-[#3D2466]">1,000,000 (1M)</SelectItem>
-                  <SelectItem value="10m" className="text-white hover:bg-[#3D2466] focus:bg-[#3D2466]">10,000,000 (10M)</SelectItem>
-                  <SelectItem value="100m" className="text-white hover:bg-[#3D2466] focus:bg-[#3D2466]">100,000,000 (100M)</SelectItem>
-                  <SelectItem value="1b" className="text-white hover:bg-[#3D2466] focus:bg-[#3D2466]">1,000,000,000 (1B)</SelectItem>
+                <SelectContent className="bg-[#5c3f77] border-none text-white">
+                  {coinAmounts.map((amount, index) => (
+                    <SelectItem
+                      key={index}
+                      value={amount.toLowerCase().replace(/[^a-z0-9]/g, "")}
+                      className="focus:bg-[#6b4a8a] focus:text-white"
+                    >
+                      {amount}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -267,7 +306,7 @@ export const Create = (): JSX.Element => {
                 htmlFor="websiteLink"
                 className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
               >
-                Website Link
+                Website Link (Optional)
               </Label>
               <Input
                 id="websiteLink"
@@ -281,7 +320,7 @@ export const Create = (): JSX.Element => {
                 htmlFor="twitterLink"
                 className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
               >
-                Twitter / X Link
+                Twitter / X Link (Optional)
               </Label>
               <Input
                 id="twitterLink"
@@ -295,7 +334,7 @@ export const Create = (): JSX.Element => {
                 htmlFor="telegramLink"
                 className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
               >
-                Telegram Link
+                Telegram Link (Optional)
               </Label>
               <Input
                 id="telegramLink"
@@ -339,12 +378,14 @@ export const Create = (): JSX.Element => {
                   </span>
                 </Button>
               </div>
-              <Button
-                className="w-full h-[40px] sm:h-[45px] rounded-[10px] bg-gradient-to-r from-[#ff00f5] to-[#00f0ff] shadow-[-1px_-1px_4px_#00000040] text-white font-medium text-lg sm:text-xl"
-                onClick={handleCreateCoin}>
-                Apply Coin
-              </Button>
-              <p className="text-sm text-white font-bold">Cost to deploy: ~0.02 SOL</p>
+              <div>
+                <Button
+                  className="w-full h-[40px] sm:h-[45px] rounded-[10px] bg-gradient-to-r from-[#ff00f5] to-[#00f0ff] shadow-[-1px_-1px_4px_#00000040] text-white font-medium text-lg sm:text-xl"
+                  onClick={handleCreateCoin}>
+                  Apply Coin
+                </Button>
+                <p className="text-sm text-white font-bold mt-2">Cost to deploy: ~0.02 SOL</p>
+              </div>
               <CreateCoinDialog
                 isOpen={isDialogOpen}
                 setIsDialogOpen={setIsDialogOpen}
@@ -358,6 +399,7 @@ export const Create = (): JSX.Element => {
                 telegramLink={telegramLink.current?.value}
                 websiteLink={websiteLink.current?.value}
                 referral={referral.current?.value}
+                // whitePaperFile={whitePaperFile}
               />
             </div>
             {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24">
@@ -388,7 +430,7 @@ export const Create = (): JSX.Element => {
     </div>
   );
 };
-function CreateCoinDialog({isOpen, setIsDialogOpen, coinName, ticker, description, coinImage, imgFile, imgBuffer, twitterLink, telegramLink, websiteLink, referral }: { isOpen: boolean; setIsDialogOpen: (value: boolean) => void; coinName: string | undefined; ticker: string | undefined; description: string | undefined; coinImage: string | null; imgFile: File | null; imgBuffer: any; twitterLink: string | undefined; telegramLink: string | undefined; websiteLink: string | undefined; referral: string | undefined }) {
+function CreateCoinDialog({isOpen, setIsDialogOpen, coinName, ticker, description, coinImage, imgFile, imgBuffer, twitterLink, telegramLink, websiteLink, referral/*, whitePaperFile*/ }: { isOpen: boolean; setIsDialogOpen: (value: boolean) => void; coinName: string | undefined; ticker: string | undefined; description: string | undefined; coinImage: string | null; imgFile: File | null; imgBuffer: any; twitterLink: string | undefined; telegramLink: string | undefined; websiteLink: string | undefined; referral: string | undefined;/* whitePaperFile: File | null;*/ }) {
   const walletCtx = useAnchorWallet();
   const contractContext = useContract();
 
@@ -431,8 +473,8 @@ function CreateCoinDialog({isOpen, setIsDialogOpen, coinName, ticker, descriptio
         return;
       }
 
-      console.log("walletCtx = ", walletCtx, "\nname = ", coinName, "\nticker = ", ticker, "\ndescription = ", description, "\nimgBuffer = ", imgBuffer, "\nimgFile = ", imgFile, "\nwebsiteLink = ", websiteLink, "\ntwitterLink = ", twitterLink, "\ntelegramLink = ", telegramLink, "\nreferralAddress = ", referral)
-      const { mintKeypair, imageUrl, createIxs } = await createToken(walletCtx, coinName, ticker, description, imgBuffer, imgFile, websiteLink, twitterLink, telegramLink, referral);
+      console.log("walletCtx = ", walletCtx, "\nname = ", coinName, "\nticker = ", ticker, "\ndescription = ", description, "\nimgBuffer = ", imgBuffer, "\nimgFile = ", imgFile, "\nwebsiteLink = ", websiteLink, "\ntwitterLink = ", twitterLink, "\ntelegramLink = ", telegramLink, "\nreferralAddress = ", referral/*, "\nwhitepaper = ", whitePaperFile*/);
+      const { mintKeypair, imageUrl, createIxs/*, whitePaperUri*/ } = await createToken(walletCtx, coinName, ticker, description, imgBuffer, imgFile, websiteLink, twitterLink, telegramLink, referral/*, whitePaperFile*/);
       allIxs = [...allIxs, ...createIxs];
 
       console.log('mintKeypair:', mintKeypair.publicKey.toBase58(), ", TOKEN_TOTAL_SUPPLY:", TOKEN_TOTAL_SUPPLY, ", NATIVE_MINT:", NATIVE_MINT.toBase58());
@@ -460,9 +502,10 @@ function CreateCoinDialog({isOpen, setIsDialogOpen, coinName, ticker, descriptio
 
       const txHash = await send(connection, walletCtx, transaction);
       console.log('txHash:', txHash);
+      // console.log('whitePaperUri:', whitePaperUri);
 
       await sleep(1000);
-      const result = await updateToken(coinName, ticker, description, imageUrl, twitterLink, telegramLink, websiteLink, referral, mintKeypair.publicKey.toBase58());
+      const result = await updateToken(coinName, ticker, description, imageUrl, twitterLink, telegramLink, websiteLink, referral, mintKeypair.publicKey.toBase58()/*, whitePaperUri*/);
       if (!result) {
         toast.dismiss(id);
         toast.error("Failed to update token info!");

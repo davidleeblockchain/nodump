@@ -21,6 +21,7 @@ import { createCreateMetadataAccountV3Instruction,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { AnchorWallet, WalletContextState } from "@solana/wallet-adapter-react";
 import { uploadMetadata } from "../api/token";
+import { isExists } from "date-fns";
 
 
 const createMint = async(mintAuthority: PublicKey, freezeAuthority: PublicKey | null, decimals: number) => {
@@ -68,7 +69,7 @@ const mintToken = async(mint: PublicKey, mintAuthority: PublicKey, mintAmount: b
     return ixs;
 }
 
-const createMetadata = async(walletCtx: AnchorWallet, mint: PublicKey, name: string, symbol: string, description: string, imgBuffer: any, imgFile: File, websiteLink: string | undefined, twitterLink: string | undefined, tgLink: string | undefined, refAddress: string | undefined, mintAuthority: PublicKey, updateAuthority: PublicKey) => {
+const createMetadata = async(walletCtx: AnchorWallet, mint: PublicKey, name: string, symbol: string, description: string, imgBuffer: any, imgFile: File, websiteLink: string | undefined, twitterLink: string | undefined, tgLink: string | undefined, refAddress: string | undefined, mintAuthority: PublicKey, updateAuthority: PublicKey/*, whitePaperFile: File*/) => {
     // console.log(`Creating metadata with mint ${mint}...`);
     if (!walletCtx.publicKey)
         throw new Error("Wallet not connected!");
@@ -83,7 +84,7 @@ const createMetadata = async(walletCtx: AnchorWallet, mint: PublicKey, name: str
         referral: refAddress
     };
 
-    const {imageUrl, metadataUri} = await uploadMetadata(imgFile, metadata);
+    const {imageUrl, metadataUri/*, whitepaperfilename: whitePaperUri*/} = await uploadMetadata(imgFile/*, whitePaperFile*/, metadata, mint.toBase58());
     if (!imageUrl || !metadataUri)
         throw new Error("Failed to upload metadata!");
 
@@ -103,8 +104,11 @@ const createMetadata = async(walletCtx: AnchorWallet, mint: PublicKey, name: str
         symbol, 
         uri: metadataUri, 
         sellerFeeBasisPoints: 0, 
+        // @ts-ignore
         creators: null, 
+        // @ts-ignore
         collection: null, 
+        // @ts-ignore
         uses: null
     };
 
@@ -124,7 +128,7 @@ const createMetadata = async(walletCtx: AnchorWallet, mint: PublicKey, name: str
         }
     );
 
-    return {imageUrl, ix};
+    return {imageUrl, ix/*, whitePaperUri*/};
 };
 
 const revokeMintAuthority = async(mint: PublicKey, mintAuthority: PublicKey) => {
@@ -140,7 +144,7 @@ const revokeMintAuthority = async(mint: PublicKey, mintAuthority: PublicKey) => 
 };
 
 
-export const createToken = async(walletCtx: AnchorWallet, name: string, ticker: string, description: string, imgBuffer: any, imgFile: File, websiteLink: string | undefined, twitterLink: string | undefined, tgLink: string | undefined, refAddress: string | undefined) => {
+export const createToken = async(walletCtx: AnchorWallet, name: string, ticker: string, description: string, imgBuffer: any, imgFile: File, websiteLink: string | undefined, twitterLink: string | undefined, tgLink: string | undefined, refAddress: string | undefined/*, whitePaperFile: File*/) => {
     // console.log(`${walletCtx.publicKey.toBase58()} is creating a new token with name: '${name}', ticker: '${ticker}', description: '${description}'`);
     // console.log(`  website: '${websiteLink}', twitterLink: '${twitterLink}', telegramLink: '${tgLink}'...`);
 
@@ -157,9 +161,9 @@ export const createToken = async(walletCtx: AnchorWallet, name: string, ticker: 
         console.log('  mint:', mintKeypair.publicKey.toBase58());
 
         /* Step 2 - Create metadata */
-        const {imageUrl, ix: metadataIx} = await createMetadata(walletCtx, mintKeypair.publicKey, name, ticker, description, imgBuffer, imgFile, websiteLink, twitterLink, tgLink, refAddress, walletCtx.publicKey, walletCtx.publicKey);
+        const {imageUrl, ix: metadataIx/*, whitePaperUri*/} = await createMetadata(walletCtx, mintKeypair.publicKey, name, ticker, description, imgBuffer, imgFile, websiteLink, twitterLink, tgLink, refAddress, walletCtx.publicKey, walletCtx.publicKey/*, whitePaperFile*/);
         createIxs.push(metadataIx);
-        console.log('  metadata:', imageUrl);
+        console.log('  metadata:', imageUrl, metadataIx/*, whitePaperUri*/);
         
         /* Step 3 - Mint tokens to owner */
         const mintIxs = await mintToken(mintKeypair.publicKey, walletCtx.publicKey, BigInt(TOKEN_TOTAL_SUPPLY), TOKEN_DECIMALS);
@@ -171,7 +175,7 @@ export const createToken = async(walletCtx: AnchorWallet, name: string, ticker: 
         createIxs.push(revokeIx);
         console.log('  revoked mintAuthority');
 
-        return { mintKeypair, imageUrl, createIxs };
+        return { mintKeypair, imageUrl, createIxs/*, whitePaperUri*/ };
     } catch (err) {
         console.error(`Failed to create token: ${err}`);
         if (err instanceof Error) {
