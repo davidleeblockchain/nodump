@@ -21,7 +21,6 @@ import { createCreateMetadataAccountV3Instruction,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { AnchorWallet, WalletContextState } from "@solana/wallet-adapter-react";
 import { uploadMetadata } from "../api/token";
-import { isExists } from "date-fns";
 
 
 const createMint = async(mintAuthority: PublicKey, freezeAuthority: PublicKey | null, decimals: number) => {
@@ -84,7 +83,7 @@ const createMetadata = async(walletCtx: AnchorWallet, mint: PublicKey, name: str
         referral: refAddress
     };
 
-    const {imageUrl, metadataUri/*, whitepaperfilename: whitePaperUri*/} = await uploadMetadata(imgFile/*, whitePaperFile*/, metadata, mint.toBase58());
+    const {imageUrl, metadataUri/*, whitepaperfilename: whitePaperUri*/} = await uploadMetadata(imgFile/*, whitePaperFile*/, metadata/*, mint.toBase58()*/);
     if (!imageUrl || !metadataUri)
         throw new Error("Failed to upload metadata!");
 

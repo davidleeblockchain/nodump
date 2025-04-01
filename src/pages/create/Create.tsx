@@ -1,4 +1,4 @@
-import { UploadIcon, SaveIcon } from "lucide-react";
+import { UploadIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import { toast } from "react-toastify"

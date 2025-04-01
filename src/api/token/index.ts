@@ -1,13 +1,13 @@
 import { axiosPrivate } from "../axiosPrivate"
 import { axiosPublic } from "../axiosPublic"
 
-export async function uploadMetadata(logoFile: File/*, whitePaperFile: File*/, metadata: any, mintAddr: string) {
+export async function uploadMetadata(logoFile: File/*, whitePaperFile: File*/, metadata: any/*, mintAddr: string*/) {
   // console.log('uploadMetadata---', logoFile, whitePaperFile, metadata, mintAddr)
   const formData = new FormData()
   formData.append('logo', logoFile)
   // formData.append('whitepaper', whitePaperFile)
   formData.append('metadata', metadata)
-  formData.append('mintaddr', mintAddr)
+  // formData.append('mintaddr', mintAddr)
 
   const response = await axiosPublic.post('/token/upload_metadata', formData);
   return response.data;
