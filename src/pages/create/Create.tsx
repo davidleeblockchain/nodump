@@ -54,6 +54,7 @@ export const Create = (): JSX.Element => {
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imgBuffer, setImageBuffer] = useState()
   const [coinType, setCoinType] = useState<string>("meme");
+  const [isIDSubmitDialogOpen, setIsIDSubmitDialogOpen] = useState(false);
   // const [whitePaperName, setWhitePaperName] = useState<string>("");
   // const [whitePaperFile, setWhitePaperFile] = useState<File | null>(null);
   // const [isSaving, setIsSaving] = useState(false);
@@ -99,6 +100,11 @@ export const Create = (): JSX.Element => {
 
   const handleTypeChange = (value: string) => {
     setCoinType(value);
+  };
+
+  const handleIDSubmit = () => {
+    // Handle ID submit logic here
+    setIsIDSubmitDialogOpen(true);
   };
 
   return (
@@ -158,7 +164,7 @@ export const Create = (): JSX.Element => {
 
             <div className="w-full">
               <Label className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]">Type</Label>
-              <RadioGroup defaultValue="utility" onValueChange={handleTypeChange} className="flex gap-4 sm:gap-8 md:gap-16 mt-4">
+              <RadioGroup defaultValue="meme" onValueChange={handleTypeChange} className="flex gap-4 sm:gap-8 md:gap-16 mt-4">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem
                     value="meme"
@@ -378,12 +384,17 @@ export const Create = (): JSX.Element => {
                     <Button
                       variant="ghost"
                       className="w-full h-9 mt-2 bg-[#5c3f77] border-none flex items-center justify-center gap-2"
+                      onClick={handleIDSubmit}
                     >
                       <UploadIcon className="w-[16px] sm:w-[19px] h-[16px] sm:h-[18px]" />
                       <span className="font-bold text-[#dddbdb] text-[13px] sm:text-[15px]">
-                        UploadIcon ID
+                        Upload ID
                       </span>
                     </Button>
+                    <CreateIDSubmitDialog
+                      isOpen={isIDSubmitDialogOpen}
+                      setIsIDSubmitDialogOpen={setIsIDSubmitDialogOpen}
+                    />
                   </>
                 )}
               </div>
@@ -439,6 +450,7 @@ export const Create = (): JSX.Element => {
     </div>
   );
 };
+
 function CreateCoinDialog({isOpen, setIsDialogOpen, coinName, ticker, description, coinImage, imgFile, imgBuffer, twitterLink, telegramLink, websiteLink, referral/*, whitePaperFile*/ }: { isOpen: boolean; setIsDialogOpen: (value: boolean) => void; coinName: string | undefined; ticker: string | undefined; description: string | undefined; coinImage: string | null; imgFile: File | null; imgBuffer: any; twitterLink: string | undefined; telegramLink: string | undefined; websiteLink: string | undefined; referral: string | undefined;/* whitePaperFile: File | null;*/ }) {
   const walletCtx = useAnchorWallet();
   const contractContext = useContract();
@@ -593,6 +605,355 @@ function CreateCoinDialog({isOpen, setIsDialogOpen, coinName, ticker, descriptio
                 <div className='flex flex-col gap-3 items-center'>
                   <button type='button' className='bg-blue-500 rounded-xl w-full h-[50px] text-xl font-bold text-black' onClick={handleCreateCoin}>Create Coin</button>
                   <p className="text-xl text-white">Cost to deploy: ~0.02 SOL</p>
+                </div>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
+  )
+}
+
+type DocumentType = {
+  id: string;
+  name: string;
+  icon: string;
+  active: boolean;
+  frontImage?: string;
+  backImage?: string;
+};
+
+function CreateIDSubmitDialog({isOpen, setIsIDSubmitDialogOpen}: { isOpen: boolean; setIsIDSubmitDialogOpen: (value: boolean) => void; }) {
+  const [selectedDoc, setSelectedDoc] = useState<string>("passport");
+  const [ppFile, setPPFile] = useState<File | null>(null);
+  const [ppPreview, setPPPreview] = useState<string | null>(null);
+  const [nifFile, setNIFFile] = useState<File | null>(null);
+  const [nifPreview, setNIFPreview] = useState<string | null>(null);
+  const [nibFile, setNIBFile] = useState<File | null>(null);
+  const [nibPreview, setNIBPreview] = useState<string | null>(null);
+  const [dlFile, setDLFile] = useState<File | null>(null);
+  const [dlPreview, setDLPreview] = useState<string | null>(null);
+
+  // Document type options data
+  const documentTypes: DocumentType[] = [
+    {
+      id: "passport",
+      name: "Passport",
+      icon: "/passporticon.png",
+      active: selectedDoc === "passport",
+      frontImage: "/passport.png"
+    },
+    {
+      id: "national-id",
+      name: "National ID",
+      icon: "/nationalidicon.png",
+      active: selectedDoc === "national-id",
+      frontImage: "/nationalid-front.png",
+      backImage: "/nationalid-back.png"
+    },
+    {
+      id: "driving-license",
+      name: "Driving License",
+      icon: "/drivinglicenseicon.png",
+      active: selectedDoc === "driving-license",
+      frontImage: "/drivinglicense.png",
+    },
+  ];
+
+  const selectedDocument = documentTypes.find(doc => doc.id === selectedDoc);
+  const handlePassportFileSelect = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert("File size must be less than 5MB");
+          return;
+        }
+        
+        if (!file.type.startsWith('image/')) {
+          alert("Please select an image file");
+          return;
+        }
+
+        setPPFile(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPPPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
+
+  const handleNationalIDFrontFileSelect = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert("File size must be less than 5MB");
+          return;
+        }
+        
+        if (!file.type.startsWith('image/')) {
+          alert("Please select an image file");
+          return;
+        }
+
+        setNIFFile(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setNIFPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
+
+  const handleNationalIDBackFileSelect = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert("File size must be less than 5MB");
+          return;
+        }
+        
+        if (!file.type.startsWith('image/')) {
+          alert("Please select an image file");
+          return;
+        }
+
+        setNIBFile(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setNIBPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
+
+  const handleDrivingLicenseFileSelect = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert("File size must be less than 5MB");
+          return;
+        }
+        
+        if (!file.type.startsWith('image/')) {
+          alert("Please select an image file");
+          return;
+        }
+
+        setDLFile(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setDLPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
+
+  const renderDocumentUpload = () => {
+    if (selectedDoc === "passport") {
+      return (
+        <div className="flex flex-col items-center gap-6">
+          {ppPreview ? (
+            <img
+              className="w-[332px] h-[308px] object-contain"
+              alt="Passport Preview"
+              src={ppPreview}
+            />
+          ) : (
+            <img
+              className="w-[332px] h-[308px] object-contain"
+              alt="Passport documents"
+              src={selectedDocument?.frontImage}
+            />
+          )}
+
+          <Button
+            variant="ghost"
+            className="w-[220px] h-8 bg-[#d9d9d91a] rounded-[5px] hover:bg-[#d9d9d930]"
+            onClick={handlePassportFileSelect}
+          >
+            <UploadIcon className="w-[19px] h-[18px] mr-3 text-white" />
+            <span className="font-['Inter',Helvetica] font-bold text-[#dddbdb] text-[15px]">
+              {ppPreview ? "Change" : "Upload"} Passport
+            </span>
+          </Button>
+        </div>
+      );
+    }
+
+    if (selectedDoc === "driving-license") {
+      return (
+        <div className="flex flex-col gap-2 md:min-h-[380px] justify-center">
+          <div className="flex flex-col items-center gap-4">
+            {dlPreview ? (
+              <img
+                className="w-[332px] h-[208px] object-contain"
+                alt="Driving License Preview"
+                src={dlPreview}
+              />
+            ) : (
+              <img
+                className="w-[332px] h-[208px] object-contain"
+                alt="Driving License Front"
+                src={selectedDocument?.frontImage}
+              />
+            )}
+            <Button
+              variant="ghost"
+              className="w-[220px] h-8 bg-[#d9d9d91a] rounded-[5px] hover:bg-[#d9d9d930]"
+              onClick={handleDrivingLicenseFileSelect}
+            >
+              <UploadIcon className="w-[19px] h-[18px] mr-3 text-white" />
+              <span className="font-['Inter',Helvetica] font-bold text-[#dddbdb] text-[15px]">
+                {dlPreview ? "Change" : "Upload"} Dirver License
+              </span>
+            </Button>
+          </div>
+        </div>
+      );
+    }
+
+    // National ID view
+    return (
+      <div className="md:flex md:flex-row flex-col items-start gap-8 space-y-5 md:space-y-0">
+        <div className="flex flex-col items-center gap-4 md:min-h-[380px] justify-center">
+            {nifPreview ? (
+              <img
+                className="w-[332px] h-[208px] object-contain"
+                alt="National ID Front Preview"
+                src={nifPreview}
+              />
+            ) : (
+              <img
+                className="w-[332px] h-[208px] object-contain"
+                alt="National ID Front"
+                src={selectedDocument?.frontImage}
+              />
+            )}
+          <Button
+            variant="ghost"
+            className="w-[220px] h-8 bg-[#d9d9d91a] rounded-[5px] hover:bg-[#d9d9d930]"
+            onClick={handleNationalIDFrontFileSelect}
+          >
+            <UploadIcon className="w-[19px] h-[18px] mr-3 text-white" />
+            <span className="font-['Inter',Helvetica] font-bold text-[#dddbdb] text-[15px]">
+              {nifPreview ? "Change" : "Upload"} Front Side
+            </span>
+          </Button>
+        </div>
+        <div className="flex flex-col items-center gap-4 md:min-h-[380px] justify-center">
+          {nibPreview ? (
+            <img
+              className="w-[332px] h-[208px] object-contain"
+              alt="Driving License Preview"
+              src={nibPreview}
+            />
+          ) : (
+            <img
+              className="w-[332px] h-[208px] object-contain"
+              alt="National ID Back"
+              src={selectedDocument?.backImage}
+            />
+          )}
+
+          <Button
+            variant="ghost"
+            className="w-[220px] h-8 bg-[#d9d9d91a] rounded-[5px] hover:bg-[#d9d9d930]"
+            onClick={handleNationalIDBackFileSelect}
+          >
+            <UploadIcon className="w-[19px] h-[18px] mr-3 text-white" />
+            <span className="font-['Inter',Helvetica] font-bold text-[#dddbdb] text-[15px]">
+              {nibPreview ? "Change" : "Upload"} Back Side
+            </span>
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <Transition appear show={isOpen}>
+      <Dialog as="div" className={`relative z-30 focus:outline-none`} onClose={() => setIsIDSubmitDialogOpen(false)}>
+        <div className="fixed inset-0 z-10 w-screen font-sans overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 bg-black/80">
+            <TransitionChild
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 transform-[scale(95%)]"
+              enterTo="opacity-100 transform-[scale(100%)]"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 transform-[scale(100%)]"
+              leaveTo="opacity-0 transform-[scale(95%)]"
+            >
+              <DialogPanel className="bg-[#120426] flex flex-row justify-center gap-10 p-10 w-full max-w-[1150px] min-h-[648px] rounded-3xl border border-white backdrop-blur-2xl">
+                <div className="bg-[#120426] rounded-[37px] overflow-hidden w-full relative border-none py-8">
+                  <div className="flex flex-col lg:flex-row gap-8">
+                    {/* Document type selection options */}
+                    <div className="flex flex-col gap-[35px] w-full lg:w-auto">
+                      {documentTypes.map((doc) => (
+                        <div
+                          key={doc.id}
+                          onClick={() => setSelectedDoc(doc.id)}
+                          className={`w-full lg:w-[335px] h-[50px] bg-[#d9d9d91a] rounded-[5px] flex items-center px-5 cursor-pointer hover:bg-[#d9d9d930] transition-opacity ${
+                            !doc.active ? "opacity-50" : ""
+                          }`}
+                        >
+                          <img
+                            className={`h-auto ${
+                              doc.id === "passport"
+                                ? "w-7"
+                                : doc.id === "national-id"
+                                ? "w-11"
+                                : "w-[43px]"
+                            }`}
+                            alt={doc.name}
+                            src={doc.icon}
+                          />
+                          <div className="ml-[25px] font-['Inter',Helvetica] font-bold text-white text-[19px]">
+                            {doc.name}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Right side content */}
+                    <div className="flex-1">
+                      {renderDocumentUpload()}
+                    </div>
+                  </div>
+
+                  {/* Submit button */}
+                  <div className="mt-10 justify-self-center md:fixed md:bottom-[47px] md:right-[40px]">
+                    <Button className="w-[200px] h-[45px] rounded-[10px] shadow-[-1px_-1px_4px_#00000040] bg-gradient-to-r from-purple-700 to-purple-500 hover:from-purple-600 hover:to-purple-400">
+                      <span className="font-['Inter',Helvetica] font-medium text-[#fcfbfb] text-xl">
+                        Submit
+                      </span>
+                    </Button>
+                  </div>
                 </div>
               </DialogPanel>
             </TransitionChild>
