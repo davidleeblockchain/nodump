@@ -117,7 +117,7 @@ export const contract_isPoolCreated = async (walletCtx: AnchorWallet | undefined
     }
 };
 
-export const contract_createPoolTx = async (walletCtx: AnchorWallet | undefined, baseToken: string, baseAmount: number, quoteMint: PublicKey, quoteAmount: number) => {
+export const contract_createPoolTx = async (walletCtx: AnchorWallet | undefined, baseToken: string, baseAmount: number, quoteMint: PublicKey, quoteAmount: number, liveTime: number) => {
     if (!walletCtx) {
         console.error("Invalid wallet");
         return null
@@ -150,8 +150,9 @@ export const contract_createPoolTx = async (walletCtx: AnchorWallet | undefined,
     }
     const reserverBaseAta = getAssociatedTokenAddressSync(baseMint, poolStateKey, true);
     const reserverQuoteAta = getAssociatedTokenAddressSync(quoteMint, poolStateKey, true);
+    const endTime = new BN(Math.floor(Date.now() / 1000) + liveTime);
     const ix = await program.methods
-        .createPool({ baseAmount: baseBalance, quoteAmount: quoteBalance })
+        .createPool({ baseAmount: baseBalance, quoteAmount: quoteBalance, endTime: endTime })
         .accounts({
             creator, 
             mainState: mainStateKey, 
@@ -175,27 +176,41 @@ export const contract_buyTx = async (walletCtx: AnchorWallet | undefined, baseTo
         console.error("Invalid wallet");
         throw new WalletNotConnectedError();
     }
+    console.log("contract_buyTx ::: ", "walletCtx = ", walletCtx.publicKey.toBase58(), "baseToken = ", baseToken, "solAmount = ", solAmount);
 
     const buyer = walletCtx.publicKey;
     const program = getProgram(walletCtx);
+    console.log("contract_buyTx ::: ", "program = ", program);
     const mainStateKey = await Keys.getMainStateKey();
     if (!(mainStateKey instanceof PublicKey) || !program) {
         throw new Error("Invalid mainStateKey or Program: must be a PublicKey");
     }
+    console.log("contract_buyTx ::: ", "mainStateKey = ", mainStateKey.toBase58());
     const mainStateInfo = await program.account.mainState.fetch(mainStateKey);
     if (!mainStateInfo) {
         throw new Error("Failed to fetch mainState!");
     }
+    console.log("contract_buyTx ::: ", "mainStateInfo = ", mainStateInfo);
 
     const baseMint = new PublicKey(baseToken);
     const quoteMint = new PublicKey(NATIVE_MINT);
     if (!baseMint || !quoteMint)
         throw new Error("Invalid token");
 
+    console.log("contract_buyTx ::: ", "baseMint = ", baseMint.toBase58(), "quoteMint = ", quoteMint.toBase58());
+
     const poolStateKey = await Keys.getPoolStateKey(baseMint, quoteMint);
     if (!(poolStateKey instanceof PublicKey)) {
         throw new Error("Invalid poolStateKey: must be a PublicKey");
     }
+
+    console.log("contract_buyTx ::: ", "poolStateKey = ", poolStateKey.toBase58());
+
+    const userInfoKey = await Keys.getUserInfoKey(poolStateKey, buyer);
+    if (!(userInfoKey instanceof PublicKey)) {
+        throw new Error("Invalid userInfoKey: must be a PublicKey");
+    }
+    console.log("contract_buyTx ::: ", "userInfoKey = ", userInfoKey.toBase58());
     
     const quoteMintDecimals = 9;
     const balance = new BN(Math.floor(solAmount * (10 ** quoteMintDecimals)));
@@ -205,6 +220,8 @@ export const contract_buyTx = async (walletCtx: AnchorWallet | undefined, baseTo
     const reserverQuoteAta = getAssociatedTokenAddressSync(quoteMint, poolStateKey, true);
     // @ts-ignore
     const feeQuoteAta = getAssociatedTokenAddressSync(quoteMint, mainStateInfo.feeRecipient);
+
+    console.log("contract_buyTx ::: ", "balance = ", balance.toString(), "buyerBaseAta = ", buyerBaseAta.toBase58(), "buyerQuoteAta = ", buyerQuoteAta.toBase58(), "reserverBaseAta = ", reserverBaseAta.toBase58(), "reserverQuoteAta = ", reserverQuoteAta.toBase58(), "feeQuoteAta = ", feeQuoteAta.toBase58());
     
     const ix = await program.methods
         .buy(balance)
@@ -213,6 +230,7 @@ export const contract_buyTx = async (walletCtx: AnchorWallet | undefined, baseTo
             buyer, buyerBaseAta, buyerQuoteAta, 
             mainState: mainStateKey, 
             poolState: poolStateKey,
+            userInfo: userInfoKey,
             // @ts-ignore
             feeRecipient: mainStateInfo.feeRecipient, feeQuoteAta, 
             reserverBaseAta, reserverQuoteAta, 

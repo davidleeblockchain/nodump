@@ -287,7 +287,7 @@ export const Board = (): JSX.Element => {
                       <p className={`text-base text-blue-100 font-bold w-full break-words break-normal`} style={{ overflowWrap: 'anywhere'}}>
                         {item.name}:
                         <span className="text-blue-100">{`(ticker: ${item.ticker}) `}</span>
-                        <p className="line-clamp-1">{item.desc}</p>
+                        <span className="line-clamp-1">{item.desc}</span>
                       </p>
                     </div>
                     <div className="wrap min-w-[30px] ml-auto h-full text-white">

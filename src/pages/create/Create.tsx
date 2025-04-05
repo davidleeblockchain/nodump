@@ -1,4 +1,4 @@
-import { UploadIcon } from "lucide-react";
+import { UploadIcon, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 import { toast } from "react-toastify"
@@ -30,10 +30,17 @@ import { Header } from "../../components/Header";
 
 export const Create = (): JSX.Element => {
   const coinAmounts = [
-    "1,000,000 (1M)",
-    "10,000,000 (10M)",
-    "100,000,000 (100M)",
-    "1,000,000,000 (1B)",
+    { value: 1000000, label: "1,000,000 (1M)" },
+    { value: 10000000, label: "10,000,000 (10M)" },
+    { value: 100000000, label: "100,000,000 (100M)" },
+    { value: 1000000000, label: "1,000,000,000 (1B)" },
+  ];
+
+  const liveTimes = [
+    { value:259200, label: "30 days" },
+    { value:518400, label: "60 days" },
+    { value:7776000, label: "90 days" },
+    { value:31536000, label: "365 days" },
   ];
 
   const { connected } = useWallet();
@@ -55,9 +62,11 @@ export const Create = (): JSX.Element => {
   const [imgBuffer, setImageBuffer] = useState()
   const [coinType, setCoinType] = useState<string>("meme");
   const [isIDSubmitDialogOpen, setIsIDSubmitDialogOpen] = useState(false);
-  // const [whitePaperName, setWhitePaperName] = useState<string>("");
   // const [whitePaperFile, setWhitePaperFile] = useState<File | null>(null);
-  // const [isSaving, setIsSaving] = useState(false);
+  const [selectedCoinAmount, setSelectedCoinAmount] = useState<string>("1,000,000,000 (1B)");
+  const [selectedCoinAmountValue, setSelectedCoinAmountValue] = useState(1000000000);
+  const [selectedLiveTime, setSelectedLiveTime] = useState<string>("30 days");
+  const [selectedLiveTimeValue, setSelectedLiveTimeValue] = useState(259200);
 
   const handleCreateCoin = () => {
     if (coinName.current?.value === '') {
@@ -107,6 +116,22 @@ export const Create = (): JSX.Element => {
     setIsIDSubmitDialogOpen(true);
   };
 
+  const handleCoinAmountChange = (value: string) => {
+    setSelectedCoinAmount(value);
+    const selectedAmount = coinAmounts.find(amount => amount.label.toString() === value);
+    if (selectedAmount) {
+      setSelectedCoinAmountValue(selectedAmount.value);
+    }
+  };
+
+  const handleLiveTimeChange = (value: string) => {
+    setSelectedLiveTime(value);
+    const selectedTime = liveTimes.find(time => time.label.toString() === value);
+    if (selectedTime) {
+      setSelectedLiveTimeValue(selectedTime.value);
+    }
+  }
+
   return (
     <div className="min-h-screen w-full bg-[#100425] flex justify-center">
       <div className="relative w-full min-h-screen">
@@ -115,54 +140,13 @@ export const Create = (): JSX.Element => {
 
         {/* Header Section */}
         <Header />
-        {/* <div className="relative z-10 flex flex-col md:flex-row justify-between items-center px-4 md:px-[58px] pt-4 md:pt-7 gap-4">
-          <img
-            className="w-[200px] md:w-[273px] h-auto md:h-[114px] object-cover mb-4 md:mb-0"
-            alt="Nodump Logo"
-            src="/logo.png"
-          />
-          <Button
-            variant="ghost"
-            className="text-[#fcfbfb] text-lg md:text-xl font-medium"
-          >
-            [ Connect Wallet ]
-          </Button>
-        </div> */}
 
         {/* relative z-10 h-auto mx-4 md:mx-[50px] mt-6 md:mt-[40px] w-full rounded-[inherit] */}
         {/* Form Container */}
-        <div className="relative flex flex-col gap-6 sm:gap-8 md:gap-12 mb-[50px] mx-[20px] md:mx-[50px] mt-6 md:mt-[61px]">
-          {/* First Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-24">
-            <div className="w-full">
-              <Label
-                htmlFor="coinName"
-                className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
-              >
-                Coin Name
-              </Label>
-              <Input
-                id="coinName"
-                className="w-full h-9 mt-2 bg-[#5c3f77] border-none text-white placeholder:text-[#dddbdb]"
-                ref={coinName}
-              />
-            </div>
-
-            <div className="w-full">
-              <Label
-                htmlFor="coinTag"
-                className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
-              >
-                Coin Tag
-              </Label>
-              <Input
-                id="coinTag"
-                className="w-full h-9 mt-2 bg-[#5c3f77] border-none text-white placeholder:text-[#dddbdb]"
-                ref={ticker}
-              />
-            </div>
-
-            <div className="w-full">
+        <div className="relative flex flex-col gap-12 mb-[50px] mx-[20px] md:mx-[50px] mt-6">
+          {/* Type Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-12 md:gap-x-24">
+            <div className="w-full md:col-start-2 lg:col-start-3">
               <Label className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]">Type</Label>
               <RadioGroup defaultValue="meme" onValueChange={handleTypeChange} className="flex gap-4 sm:gap-8 md:gap-16 mt-4">
                 <div className="flex items-center space-x-2">
@@ -195,8 +179,36 @@ export const Create = (): JSX.Element => {
             </div>
           </div>
 
-          {/* Second Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-24">
+          {/* First Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-12 md:gap-x-24">
+            <div className="w-full">
+              <Label
+                htmlFor="coinName"
+                className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
+              >
+                Coin Name
+              </Label>
+              <Input
+                id="coinName"
+                className="w-full h-9 mt-2 bg-[#5c3f77] border-none text-white placeholder:text-[#dddbdb]"
+                ref={coinName}
+              />
+            </div>
+
+            <div className="w-full">
+              <Label
+                htmlFor="coinTag"
+                className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
+              >
+                Coin Tag
+              </Label>
+              <Input
+                id="coinTag"
+                className="w-full h-9 mt-2 bg-[#5c3f77] border-none text-white placeholder:text-[#dddbdb]"
+                ref={ticker}
+              />
+            </div>
+
             <div className="w-full">
               <Label
                 htmlFor="coinImage"
@@ -236,40 +248,24 @@ export const Create = (): JSX.Element => {
                 {/* <input type="text" className="border-green-200 border-2 text-white p-2 w-full max-w-[400px] bg-transparent rounded placeholder-white" placeholder=''/> */}
               </div>
             </div>
+          </div>
 
-            {/* <div className="w-full">
+          {/* Second Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-12 md:gap-x-24">
+            <div className="w-full">
               <Label
-                htmlFor="whitePaper"
+                htmlFor="telegramLink"
                 className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
               >
-                White Paper (Optional)
+                Telegram Link (Optional)
               </Label>
-              <input
-                type="file"
-                ref={whitePaperRef}
-                accept=".pdf"
-                onChange={handleWhitePaperChange}
-                className="hidden"
+              <Input
+                id="telegramLink"
+                className="w-full h-9 mt-2 bg-[#5c3f77] border-none text-white placeholder:text-[#dddbdb]"
+                ref={telegramLink}
               />
-              <Button
-                variant="ghost"
-                onClick={handleWhitePaperClick}
-                className="w-full h-9 mt-2 bg-[#5c3f77] border-none flex items-center justify-center gap-2"
-              >
-                <UploadIcon className="w-[16px] sm:w-[19px] h-[16px] sm:h-[18px]" />
-                <span className="font-bold text-[#dddbdb] hover:text-[#5c3f77] text-[13px] sm:text-[15px]">
-                  {whitePaperName || "Upload White Paper"}
-                </span>
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={handleSaveWhitePaper}
-                disabled={!whitePaperFile || isSaving}
-                className="w-[70px] h-9 bg-[#5c3f77] rounded-[5px] border-none text-[#dddbdb] font-bold text-[15px] flex justify-center items-center hover:bg-[#6b4a8a] disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <SaveIcon className={`w-[19px] h-[18px] ${isSaving ? 'animate-spin' : ''}`} />
-              </Button>
-            </div> */}
+            </div>
+
             <div className="w-full">
               <Label
                 htmlFor="whitepaperLink"
@@ -291,7 +287,7 @@ export const Create = (): JSX.Element => {
               >
                 Number Of Coins
               </Label>
-              <Select>
+              <Select onValueChange={handleCoinAmountChange} value={selectedCoinAmount}>
                 <SelectTrigger className="w-full h-9 mt-2 bg-[#5c3f77] border-none text-white">
                   <SelectValue placeholder="1,000,000,000 (1B)" />
                 </SelectTrigger>
@@ -299,10 +295,10 @@ export const Create = (): JSX.Element => {
                   {coinAmounts.map((amount, index) => (
                     <SelectItem
                       key={index}
-                      value={amount.toLowerCase().replace(/[^a-z0-9]/g, "")}
+                      value={amount.label}
                       className="focus:bg-[#6b4a8a] focus:text-white"
                     >
-                      {amount}
+                      {amount.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -311,7 +307,7 @@ export const Create = (): JSX.Element => {
           </div>
 
           {/* Third Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-24">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-12 md:gap-x-24">
             <div className="w-full">
               <Label
                 htmlFor="websiteLink"
@@ -342,16 +338,27 @@ export const Create = (): JSX.Element => {
 
             <div className="w-full">
               <Label
-                htmlFor="telegramLink"
+                htmlFor="numberOfLivetime"
                 className="font-bold text-white text-[15px] sm:text-[16px] md:text-[19px]"
               >
-                Telegram Link (Optional)
+                Live Time
               </Label>
-              <Input
-                id="telegramLink"
-                className="w-full h-9 mt-2 bg-[#5c3f77] border-none text-white placeholder:text-[#dddbdb]"
-                ref={telegramLink}
-              />
+              <Select onValueChange={handleLiveTimeChange} value={selectedLiveTime}>
+                <SelectTrigger className="w-full h-9 mt-2 bg-[#5c3f77] border-none text-white">
+                  <SelectValue placeholder="30 days" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#5c3f77] border-none text-white">
+                  {liveTimes.map((amount, index) => (
+                    <SelectItem
+                      key={index}
+                      value={amount.label}
+                      className="focus:bg-[#6b4a8a] focus:text-white"
+                    >
+                      {amount.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -371,7 +378,7 @@ export const Create = (): JSX.Element => {
               />
             </div>
 
-            <div className="space-y-6 w-full flex flex-col justify-between">
+            <div className="space-y-14 lg:space-y-6 w-full flex flex-col justify-between">
               <div className="md:h-[76px]">
                 {coinType === "utility" && (
                   <>
@@ -418,8 +425,10 @@ export const Create = (): JSX.Element => {
                 twitterLink={twitterLink.current?.value}
                 telegramLink={telegramLink.current?.value}
                 websiteLink={websiteLink.current?.value}
-                referral={referral.current?.value}
-                // whitePaperFile={whitePaperFile}
+                // referral={referral.current?.value}
+                whitepaperLink={whitepaperLink.current?.value}
+                totalSupply={selectedCoinAmountValue}
+                liveTime={selectedLiveTimeValue}
               />
             </div>
             {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24">
@@ -451,7 +460,7 @@ export const Create = (): JSX.Element => {
   );
 };
 
-function CreateCoinDialog({isOpen, setIsDialogOpen, coinName, ticker, description, coinImage, imgFile, imgBuffer, twitterLink, telegramLink, websiteLink, referral/*, whitePaperFile*/ }: { isOpen: boolean; setIsDialogOpen: (value: boolean) => void; coinName: string | undefined; ticker: string | undefined; description: string | undefined; coinImage: string | null; imgFile: File | null; imgBuffer: any; twitterLink: string | undefined; telegramLink: string | undefined; websiteLink: string | undefined; referral: string | undefined;/* whitePaperFile: File | null;*/ }) {
+function CreateCoinDialog({isOpen, setIsDialogOpen, coinName, ticker, description, coinImage, imgFile, imgBuffer, twitterLink, telegramLink, websiteLink, whitepaperLink, totalSupply, liveTime }: { isOpen: boolean; setIsDialogOpen: (value: boolean) => void; coinName: string | undefined; ticker: string | undefined; description: string | undefined; coinImage: string | null; imgFile: File | null; imgBuffer: any; twitterLink: string | undefined; telegramLink: string | undefined; websiteLink: string | undefined; whitepaperLink: string | undefined; totalSupply: number; liveTime: number; }) {
   const walletCtx = useAnchorWallet();
   const contractContext = useContract();
 
@@ -494,12 +503,12 @@ function CreateCoinDialog({isOpen, setIsDialogOpen, coinName, ticker, descriptio
         return;
       }
 
-      console.log("walletCtx = ", walletCtx, "\nname = ", coinName, "\nticker = ", ticker, "\ndescription = ", description, "\nimgBuffer = ", imgBuffer, "\nimgFile = ", imgFile, "\nwebsiteLink = ", websiteLink, "\ntwitterLink = ", twitterLink, "\ntelegramLink = ", telegramLink, "\nreferralAddress = ", referral/*, "\nwhitepaper = ", whitePaperFile*/);
-      const { mintKeypair, imageUrl, createIxs/*, whitePaperUri*/ } = await createToken(walletCtx, coinName, ticker, description, imgBuffer, imgFile, websiteLink, twitterLink, telegramLink, referral/*, whitePaperFile*/);
+      console.log("walletCtx = ", walletCtx, "\nname = ", coinName, "\nticker = ", ticker, "\ndescription = ", description, "\nimgBuffer = ", imgBuffer, "\nimgFile = ", imgFile, "\nwebsiteLink = ", websiteLink, "\ntwitterLink = ", twitterLink, "\ntelegramLink = ", telegramLink, "\nwhitepaperLink = ", whitepaperLink, "\ntotalSupply = ", totalSupply, "\nliveTime = ", liveTime); 
+      const { mintKeypair, imageUrl, createIxs } = await createToken(walletCtx, coinName, ticker, description, imgBuffer, imgFile, websiteLink, twitterLink, telegramLink, whitepaperLink, totalSupply, liveTime);
       allIxs = [...allIxs, ...createIxs];
 
       console.log('mintKeypair:', mintKeypair.publicKey.toBase58(), ", TOKEN_TOTAL_SUPPLY:", TOKEN_TOTAL_SUPPLY, ", NATIVE_MINT:", NATIVE_MINT.toBase58());
-      const createPoolIx = await getCreatePoolTx(mintKeypair.publicKey.toBase58(), TOKEN_TOTAL_SUPPLY, NATIVE_MINT, 0);
+      const createPoolIx = await getCreatePoolTx(mintKeypair.publicKey.toBase58(), totalSupply, NATIVE_MINT, 0, liveTime);
       allIxs.push(createPoolIx);
 
       if (Number(amount) > 0) {
@@ -521,12 +530,14 @@ function CreateCoinDialog({isOpen, setIsDialogOpen, coinName, ticker, descriptio
       const transaction = new VersionedTransaction(message);
       transaction.sign([mintKeypair]);
 
+      console.log('simulate transaction:', connection.simulateTransaction(transaction));
+
       const txHash = await send(connection, walletCtx, transaction);
       console.log('txHash:', txHash);
       // console.log('whitePaperUri:', whitePaperUri);
 
       await sleep(1000);
-      const result = await updateToken(coinName, ticker, description, imageUrl, twitterLink, telegramLink, websiteLink, referral, mintKeypair.publicKey.toBase58()/*, whitePaperUri*/);
+      const result = await updateToken(coinName, ticker, description, imageUrl, twitterLink, telegramLink, websiteLink, whitepaperLink, mintKeypair.publicKey.toBase58(), totalSupply, liveTime);
       if (!result) {
         toast.dismiss(id);
         toast.error("Failed to update token info!");
@@ -910,6 +921,13 @@ function CreateIDSubmitDialog({isOpen, setIsIDSubmitDialogOpen}: { isOpen: boole
               leaveTo="opacity-0 transform-[scale(95%)]"
             >
               <DialogPanel className="bg-[#120426] flex flex-row justify-center gap-10 p-10 w-full max-w-[1150px] min-h-[648px] rounded-3xl border border-white backdrop-blur-2xl">
+                <button
+                  onClick={() => setIsIDSubmitDialogOpen(false)}
+                  className="absolute right-2 top-2 sm:right-3 sm:top-3 md:right-4 md:top-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  aria-label="Close overlay"
+                >
+                  <X className="w-5 h-5 sm:w-5 sm:h-5 text-gray-300" />
+                </button>
                 <div className="bg-[#120426] rounded-[37px] overflow-hidden w-full relative border-none py-8">
                   <div className="flex flex-col lg:flex-row gap-8">
                     {/* Document type selection options */}

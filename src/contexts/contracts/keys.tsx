@@ -4,7 +4,8 @@ import { TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { PUMPFUN_PROGRAM_ID, 
     MAINSTATE_PREFIX_SEED, 
-    POOLSTATE_PREFIX_SEED
+    POOLSTATE_PREFIX_SEED,
+    USER_INFO_SEED
 } from './constants';
 
 
@@ -31,6 +32,18 @@ export const getPoolStateKey = async (baseMint: PublicKey, quoteMint: PublicKey)
     );
     return poolStateKey;
 };
+
+export const getUserInfoKey = async (poolKey: PublicKey, buyerKey: PublicKey) => {
+    const [userInfoKey] = await asyncGetPda(
+        [
+            Buffer.from(USER_INFO_SEED),
+            poolKey.toBuffer(),
+            buyerKey.toBuffer(),
+        ],
+        PUMPFUN_PROGRAM_ID
+    );
+    return userInfoKey;
+}
 
 export const getAssociatedTokenAccountKey = async (ownerPubkey: PublicKey, tokenMint: PublicKey) => {
     let associatedTokenAccountKey = PublicKey.findProgramAddressSync(

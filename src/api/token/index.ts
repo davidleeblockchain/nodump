@@ -13,9 +13,9 @@ export async function uploadMetadata(logoFile: File/*, whitePaperFile: File*/, m
   return response.data;
 }
 
-export async function updateToken(name: string, ticker: string, desc: string, logo: string, twitter: string | undefined, telegram: string | undefined, website: string | undefined, referral: string | undefined, mintAddr: string/*, whitepaperuri: string | null*/) {
+export async function updateToken(name: string, ticker: string, desc: string, logo: string, twitter: string | undefined, telegram: string | undefined, website: string | undefined, whitepaper: string | undefined, mintAddr: string, totalSupply: number, liveTime: number) {
   const result = await axiosPrivate.put(`/token/update_token`, {
-    name, ticker, desc, logo, twitter, telegram, website, referral, mintAddr/*, whitepaperuri*/
+    name, ticker, desc, logo, twitter, telegram, website, whitepaper, mintAddr, totalSupply, liveTime
   });
   return result.data;
 }

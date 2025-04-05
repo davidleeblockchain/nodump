@@ -19,7 +19,7 @@ interface ContractContextType {
     getMainStateInfo: () => Promise<any>;
     isContractInitialized: () => Promise<any>;
     initializeContract: () => Promise<void>;
-    getCreatePoolTx: (baseToken: string, baseAmount: number, quoteMint: PublicKey, quoteAmount: number) => Promise<any>;
+    getCreatePoolTx: (baseToken: string, baseAmount: number, quoteMint: PublicKey, quoteAmount: number, liveTime: number) => Promise<any>;
     isPoolCreated: (baseToken: string, quoteMint: PublicKey) => Promise<boolean>;
     getBuyTx: (token: string, amount: number) => Promise<any>;
     getSellTx: (token: string, amount: number) => Promise<any>;
@@ -73,15 +73,15 @@ const ContractContextProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         return await contract_isPoolCreated(walletCtx, baseToken, quoteMint);
     };
 
-    const getCreatePoolTx = async (baseToken: string, baseAmount: number, quoteMint: PublicKey, quoteAmount: number) => {
+    const getCreatePoolTx = async (baseToken: string, baseAmount: number, quoteMint: PublicKey, quoteAmount: number, liveTime: number) => {
         let tx = null;
 
-        console.log("getCreatePoolTx", "baseToken = ", baseToken, "baseAmount = ", baseAmount, "quoteMint = ", quoteMint, "quoteAmount = ", quoteAmount);
+        console.log("getCreatePoolTx", "baseToken = ", baseToken, "baseAmount = ", baseAmount, "quoteMint = ", quoteMint, "quoteAmount = ", quoteAmount, "liveTime = ", liveTime);
 
         setTxLoading(true);
 
         try {
-            tx = await contract_createPoolTx(walletCtx, baseToken, baseAmount, quoteMint, quoteAmount);
+            tx = await contract_createPoolTx(walletCtx, baseToken, baseAmount, quoteMint, quoteAmount, liveTime);
         } catch (err) {
             console.error(err);
             if (err instanceof Error) {

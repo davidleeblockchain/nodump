@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { toast } from "react-toastify";
@@ -58,9 +58,15 @@ export const Profile = (): JSX.Element => {
   const [ownerAddress, setOwnerAddress] = useState<string | null>(null);
   const [feeRecipient, setFeeRecipient] = useState<string | null>(null);
   const [tradingFee, setTradingFee] = useState<number | null>(null);
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
+    if (!wallet || hasInitialized.current) return;
+
+    hasInitialized.current = true;
+
     const initialize = async () => {
+      console.log("Initializing contract...", wallet?.publicKey?.toBase58());
       if (!wallet) return;
 
       const contractOwner = await getOwnerAddress();

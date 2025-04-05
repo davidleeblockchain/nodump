@@ -140,7 +140,7 @@ export const Header = () => {
         {/* [Connect Wallet] */}
         {mounted && <WalletMultiButton style={{backgroundColor: 'transparent'}} />}
         {wallet?.publicKey !== null && (
-          <Link to={`/profile/${wallet?.publicKey.toBase58()}`}>
+          <Link style={{zIndex: '10'}} to={`/profile/${wallet?.publicKey.toBase58()}`}>
             <UserCircleIcon className="size-12 fill-white" />
           </Link>
         )}
